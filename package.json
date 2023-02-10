@@ -1,0 +1,29 @@
+{
+  "name": "hotkeys-inputs-js",
+  "version": "1.0.0",
+  "description": "A javascript library for handling both keyboard and gamepad inputs in web applications.",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
+    "lint": "tslint -p tsconfig.json",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hugoperier/hotkeys-inputs-js.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/hugoperier/hotkeys-inputs-js/issues"
+  },
+  "homepage": "https://github.com/hugoperier/hotkeys-inputs-js#readme",
+  "devDependencies": {
+    "prettier": "^2.8.4",
+    "tslint": "^6.1.3",
+    "tslint-config-prettier": "^1.18.0",
+    "typescript": "^4.9.5"
+  }
+}
