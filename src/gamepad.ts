@@ -1,13 +1,16 @@
-import { ILiteEvent, LiteEvent } from "./LiteEvents";
+import { ILiteEvent, LiteEvent } from './LiteEvents';
+import { IProxyEventOption, IProxyInputEventHandler } from './types';
+import { defaultOpts } from './utils';
 
 interface KeyEventAction<T> {
-  action: ILiteEvent<T>;
-  after: ILiteEvent<T>;
-  before: ILiteEvent<T>;
+  changed: ILiteEvent<T>;
+  pressed: ILiteEvent<T>;
+  released: ILiteEvent<T>;
+  repeat: ILiteEvent<T>;
 }
 
 interface ButtonActions {
-  [index: number]: KeyEventAction<void>;
+  [index: number]: KeyEventAction<number>;
 }
 
 export enum DefaultGamepad {
@@ -44,7 +47,7 @@ interface Pressed {
   [index: string]: boolean;
 }
 
-export interface GamepadPrototype {
+export interface GamepadPrototype extends IProxyInputEventHandler {
   id: number;
   buttons: number;
   axes: number;
@@ -58,32 +61,20 @@ export interface GamepadPrototype {
   buttonActions: ButtonActions;
   axesActions: AxesActions;
   pressed: Pressed;
-  on: (
-    eventName: number | DefaultGamepad,
-    callback: (value?: number) => void
-  ) => void;
-  off: (
-    action: "action" | "after" | "before",
-    eventName: number | DefaultGamepad,
-    callback: (value?: number) => void
-  ) => void;
-  after: (
-    eventName: number | DefaultGamepad,
-    callback: (value?: number) => void
-  ) => void;
-  before: (
-    eventName: number | DefaultGamepad,
-    callback: (value?: number) => void
-  ) => void;
+  on: (eventName: number | string, callback: (value?: number) => void, opts?: IProxyEventOption) => void;
+  off: (eventName: number | string) => void;
+  after: (eventName: number | DefaultGamepad, callback: (value?: number) => void) => void;
+  before: (eventName: number | DefaultGamepad, callback: (value?: number) => void) => void;
   set: (property: string, value: any) => void;
   vibrate: (value?: number, duration?: number) => void;
   checkStatus: () => void;
 }
 
 const makeEmptyEvents = <T>() => ({
-  action: new LiteEvent<T>(),
-  after: new LiteEvent<T>(),
-  before: new LiteEvent<T>(),
+  changed: new LiteEvent<T>(),
+  pressed: new LiteEvent<T>(),
+  released: new LiteEvent<T>(),
+  repeat: new LiteEvent<T>(),
 });
 
 const gamepad = {
@@ -103,18 +94,15 @@ const gamepad = {
       axesActions: {},
       pressed: {},
       set: function (property: string, value: any) {
-        const properties = ["axeThreshold"];
+        const properties = ['axeThreshold'];
         if (properties.indexOf(property) >= 0) {
-          if (
-            property === "axeThreshold" &&
-            (!parseFloat(value) || value < 0.0 || value > 1.0)
-          ) {
-            console.error("gamepad: invalid value number");
+          if (property === 'axeThreshold' && (!parseFloat(value) || value < 0.0 || value > 1.0)) {
+            console.error('gamepad: invalid value number');
             return;
           }
           (this as any)[property] = value;
         } else {
-          console.error("gamepad: invalid property");
+          console.error('gamepad: invalid property');
         }
       },
       vibrate: function (value = 0.75, duration = 500) {
@@ -123,7 +111,7 @@ const gamepad = {
             case 0:
               return this.hapticActuator.pulse(value, duration);
             case 1:
-              return this.hapticActuator.playEffect("dual-rumble", {
+              return this.hapticActuator.playEffect('dual-rumble', {
                 duration: duration,
                 strongMagnitude: value,
                 weakMagnitude: value,
@@ -147,103 +135,93 @@ const gamepad = {
                 if (!this.pressed[`button${x}`]) {
                   // use a set
                   this.pressed[`button${x}`] = true;
-                  this.buttonActions[x].before.trigger();
+                  this.buttonActions[x].pressed.trigger(1);
                 }
-                this.buttonActions[x].action.trigger();
+                this.buttonActions[x].changed.trigger(1);
               } else if (this.pressed[`button${x}`]) {
                 delete this.pressed[`button${x}`];
-                this.buttonActions[x].after.trigger();
+                this.buttonActions[x].released.trigger(0);
               }
             }
           }
           if (gp.axes) {
             for (let x = 0; x < this.axes; x++) {
-              const modifier = x % 2 === 0 ? "horizontal" : "vertical";
+              const modifier = x % 2 === 0 ? 'horizontal' : 'vertical';
               if (Math.abs(this.axeValues[x] - gp.axes[x]) < this.axeStep) {
                 // In that case we do nothing, the value has not changed or, under the thresholt.
                 // We do not want to spam the consumer with callback
               } else if (gp.axes[x] === 0 && this.axeValues[x] !== 0) {
                 // If released
-                this.axesActions[x][modifier].action.trigger(gp.axes[x]);
-                this.axesActions[x][modifier].after.trigger(gp.axes[x]);
+                this.axesActions[x][modifier].changed.trigger(gp.axes[x]);
+                this.axesActions[x][modifier].released.trigger(gp.axes[x]);
                 this.axeValues[x] = gp.axes[x];
               } else if (this.axeValues[x] === 0) {
                 // If activated
-                this.axesActions[x][modifier].action.trigger(gp.axes[x]);
-                this.axesActions[x][modifier].before.trigger(gp.axes[x]);
+                this.axesActions[x][modifier].changed.trigger(gp.axes[x]);
+                this.axesActions[x][modifier].pressed.trigger(gp.axes[x]);
                 this.axeValues[x] = gp.axes[x];
               } else {
                 // Value changed
-                this.axesActions[x][modifier].action.trigger(gp.axes[x]);
+                this.axesActions[x][modifier].changed.trigger(gp.axes[x]);
                 this.axeValues[x] = gp.axes[x];
               }
             }
           }
         }
       },
-      on: function (
-        eventName: number | DefaultGamepad,
-        callback: (value?: number) => void
-      ) {
-        if (eventName === DefaultGamepad.LeftJoystickAxeX) {
-          console.log("subscribe");
-          this.axesActions[0].horizontal.action.on(callback);
-        } else if (eventName === DefaultGamepad.LeftJoystickAxeY)
-          this.axesActions[1].vertical.action.on(callback);
-        else if (eventName === DefaultGamepad.RightJoystickAxeX)
-          this.axesActions[2].horizontal.action.on(callback);
-        else if (eventName === DefaultGamepad.LeftJoystickAxeY)
-          this.axesActions[3].vertical.action.on(callback);
-        else this.buttonActions[eventName]["action"].on(callback as () => void);
-        // return this.associateEvent(eventName, callback, "action");
+      on: function (eventName: number | string, callback: (value?: number) => void, opts?: IProxyEventOption) {
+        const options = opts ?? defaultOpts;
+
+        if (eventName < 0) {
+          // If subscribing to a joystick event
+          const jIndex = Math.floor((Math.abs(eventName as number) - 1) / 2);
+          const orientation = (Math.abs(eventName as number) - 1) % 2 === 0 ? 'horizontal' : 'vertical';
+          this.axesActions[jIndex][orientation][options.event].on(callback);
+        } else {
+          // If a button
+          this.buttonActions[eventName as number][options.event].on(callback);
+        }
         return this;
       },
-      off: function (
-        action: "action" | "after" | "before",
-        eventName: number | DefaultGamepad,
-        callback: (value?: number) => void
-      ) {
-        if (eventName === DefaultGamepad.LeftJoystickAxeX)
-          this.axesActions[0].horizontal[action].off(callback);
-        else if (eventName === DefaultGamepad.LeftJoystickAxeY)
-          this.axesActions[1].vertical[action].off(callback);
-        else if (eventName === DefaultGamepad.RightJoystickAxeX)
-          this.axesActions[2].horizontal[action].off(callback);
-        else if (eventName === DefaultGamepad.LeftJoystickAxeY)
-          this.axesActions[3].vertical[action].off(callback);
-        else this.buttonActions[eventName][action].off(callback as () => void);
+      off: function (eventName: number | string) {
+        if (eventName < 0) {
+          // If unsubscribing to a joystick event
+          const jIndex = Math.floor((Math.abs(eventName as number) - 1) / 2);
+          const orientation = (Math.abs(eventName as number) - 1) % 2 === 0 ? 'horizontal' : 'vertical';
+          this.axesActions[jIndex][orientation].changed.offAll();
+          this.axesActions[jIndex][orientation].pressed.offAll();
+          this.axesActions[jIndex][orientation].released.offAll();
+          this.axesActions[jIndex][orientation].repeat.offAll();
+        } else {
+          // If a button
+          this.buttonActions[eventName as number].changed.offAll();
+          this.buttonActions[eventName as number].pressed.offAll();
+          this.buttonActions[eventName as number].released.offAll();
+          this.buttonActions[eventName as number].repeat.offAll();
+        }
         return this;
+        // if (eventName === DefaultGamepad.LeftJoystickAxeX) this.axesActions[0].horizontal[action].off(callback);
+        // else if (eventName === DefaultGamepad.LeftJoystickAxeY) this.axesActions[1].vertical[action].off(callback);
+        // else if (eventName === DefaultGamepad.RightJoystickAxeX) this.axesActions[2].horizontal[action].off(callback);
+        // else if (eventName === DefaultGamepad.LeftJoystickAxeY) this.axesActions[3].vertical[action].off(callback);
+        // else this.buttonActions[eventName][action].off(callback as () => void);
         // return this.associateEvent(eventName, function () {}, "action");
       },
-      after: function (
-        eventName: number | DefaultGamepad,
-        callback: (value?: number) => void
-      ) {
-        if (eventName === DefaultGamepad.LeftJoystickAxeX)
-          this.axesActions[0].horizontal.after.on(callback);
-        else if (eventName === DefaultGamepad.LeftJoystickAxeY)
-          this.axesActions[1].vertical.after.on(callback);
-        else if (eventName === DefaultGamepad.RightJoystickAxeX)
-          this.axesActions[2].horizontal.after.on(callback);
-        else if (eventName === DefaultGamepad.LeftJoystickAxeY)
-          this.axesActions[3].vertical.after.on(callback);
-        else this.buttonActions[eventName]["after"].on(callback as () => void);
+      after: function (eventName: number | DefaultGamepad, callback: (value?: number) => void) {
+        // if (eventName === DefaultGamepad.LeftJoystickAxeX) this.axesActions[0].horizontal.after.on(callback);
+        // else if (eventName === DefaultGamepad.LeftJoystickAxeY) this.axesActions[1].vertical.after.on(callback);
+        // else if (eventName === DefaultGamepad.RightJoystickAxeX) this.axesActions[2].horizontal.after.on(callback);
+        // else if (eventName === DefaultGamepad.LeftJoystickAxeY) this.axesActions[3].vertical.after.on(callback);
+        // else this.buttonActions[eventName]['after'].on(callback as () => void);
         // return this.associateEvent(eventName, callback, "after");
         return this;
       },
-      before: function (
-        eventName: number | DefaultGamepad,
-        callback: (value?: number) => void
-      ) {
-        if (eventName === DefaultGamepad.LeftJoystickAxeX)
-          this.axesActions[0].horizontal.before.on(callback);
-        else if (eventName === DefaultGamepad.LeftJoystickAxeY)
-          this.axesActions[1].vertical.before.on(callback);
-        else if (eventName === DefaultGamepad.RightJoystickAxeX)
-          this.axesActions[2].horizontal.before.on(callback);
-        else if (eventName === DefaultGamepad.LeftJoystickAxeY)
-          this.axesActions[3].vertical.before.on(callback);
-        else this.buttonActions[eventName]["before"].on(callback as () => void);
+      before: function (eventName: number | DefaultGamepad, callback: (value?: number) => void) {
+        // if (eventName === DefaultGamepad.LeftJoystickAxeX) this.axesActions[0].horizontal.before.on(callback);
+        // else if (eventName === DefaultGamepad.LeftJoystickAxeY) this.axesActions[1].vertical.before.on(callback);
+        // else if (eventName === DefaultGamepad.RightJoystickAxeX) this.axesActions[2].horizontal.before.on(callback);
+        // else if (eventName === DefaultGamepad.LeftJoystickAxeY) this.axesActions[3].vertical.before.on(callback);
+        // else this.buttonActions[eventName]['before'].on(callback as () => void);
         // return this.associateEvent(eventName, callback, "before");
         return this;
       },
@@ -263,21 +241,18 @@ const gamepad = {
     // check if vibration actuator exists
     if (gpad.hapticActuators) {
       // newer standard
-      if (typeof (gpad.hapticActuators as any).pulse === "function") {
+      if (typeof (gpad.hapticActuators as any).pulse === 'function') {
         gamepadPrototype.hapticActuator = gpad.hapticActuators;
         gamepadPrototype.vibrationMode = 0;
         gamepadPrototype.vibration = true;
-      } else if (
-        gpad.hapticActuators[0] &&
-        typeof (gpad.hapticActuators as any)[0].pulse === "function"
-      ) {
+      } else if (gpad.hapticActuators[0] && typeof (gpad.hapticActuators as any)[0].pulse === 'function') {
         gamepadPrototype.hapticActuator = gpad.hapticActuators[0];
         gamepadPrototype.vibrationMode = 0;
         gamepadPrototype.vibration = true;
       }
     } else if ((gpad as any).vibrationActuator) {
       // old chrome stuff
-      if (typeof (gpad as any).vibrationActuator.playEffect === "function") {
+      if (typeof (gpad as any).vibrationActuator.playEffect === 'function') {
         gamepadPrototype.hapticActuator = (gpad as any).vibrationActuator;
         gamepadPrototype.vibrationMode = 1;
         gamepadPrototype.vibration = true;

@@ -17,48 +17,61 @@
         top: 0;
       }
     </style>
-    <script>
-      var exports = {};
-    </script>
-    <script type="module" src="../lib/inputActions.js"></script>
+    <script type="module" src="../dist/hotkeys-inputs-js.mjs"></script>
   </head>
   <body>
     <div id="canvas">
       <div id="player"></div>
     </div>
+    <p>
+        <input type="checkbox" id="gamepad-enabled">Gamepad</input>
+        <input type="checkbox" id="keyboard-enabled">Keyboard</input>
+      </p>
 
-    <script>
+    <script type="module">
+      import inputAction from '../dist/hotkeys-inputs-js.mjs';
+
       const canvas = document.getElementById('canvas');
       const player = document.getElementById('player');
-      const stepSize = 50;
+      const stepSize = 10;
+      let gamepadEnabled = false;
+      let keyboardEnabled = false;
+
+      const gamepadCheckbox = document.getElementById('gamepad-enabled');
+      const keyboardCheckbox = document.getElementById('keyboard-enabled');
+
+      const handleInputDeviceChange = () => {
+        const arr = []
+        if (gamepadCheckbox)
+            arr.push("gamepad")
+        if (keyboardCheckbox)
+            arr.push("keyboard")
+        inputAction.setActiveInputHandlers(arr)
+      }
+
+      gamepadCheckbox.addEventListener('change', function () {
+        gamepadEnabled = this.checked;
+      });
+      keyboardCheckbox.addEventListener('change', function () {
+        keyboardEnabled = this.checked;
+      });
 
       const defaultMapping = {
         directionY: [
           { type: 'keyboard', key: 'w', options: { event: 'repeat', value: 1 } },
-          { type: 'keyboard', key: 's', otions: { event: 'repeat', value: -1 } },
+          { type: 'keyboard', key: 's', options: { event: 'repeat', value: -1 } },
           { type: 'gamepad', key: -2 },
         ],
         directionX: [
           { type: 'keyboard', key: 'd', options: { event: 'repeat', value: 1 } },
-          { type: 'keyboard', key: 'a', otions: { event: 'repeat', value: 1 } },
+          { type: 'keyboard', key: 'a', options: { event: 'repeat', value: -1 } },
           { type: 'gamepad', key: -1 },
         ],
-        // rotation: [
-        //   { type: 'keyboard', key: 'd', value: 1 },
-        //   { type: 'keyboard', key: 'a', value: -1 },
-        //   { type: 'gamepad', key: InputFusion.LeftJoystickAxeX },
-        // ],
-        // speed: [
-        //   { type: 'keyboard', key: 'leftArrow', value: -1 },
-        //   { type: 'keyboard', key: 'rightArrow', value: 1 },
-        //   { type: 'gamepad', key: InputFusion.KeyPlus, value: 1 },
-        //   { type: 'gamepad', key: InputFusion.KeyMinus, value: 1 },
-        // ],
       };
 
-      inputActions.defineInputActions(defaultMapping);
+      inputAction.defineInputActions(defaultMapping);
 
-      inputActions.onInputActions(
+      inputAction.onInputActions(
         `cubeActionHandler`,
         {
           directionX: (v) => moveX(v),
@@ -69,57 +82,19 @@
 
       function moveY(direction) {
         let top = parseInt(window.getComputedStyle(player).getPropertyValue('top'));
-        if (direction > 0) {
-          if (top > 0) {
-            player.style.top = `${top - stepSize}px`;
-          }
-        } else {
-          if (top + stepSize < canvas.offsetHeight - player.offsetHeight) {
-            player.style.top = `${top + stepSize}px`;
-          }
+        if (top > 0 && direction > 0) {
+          player.style.top = `${top - stepSize}px`;
+        } else if (direction < 0 && top + stepSize < canvas.offsetHeight - player.offsetHeight) {
+          player.style.top = `${top + stepSize}px`;
         }
       }
 
       function moveX(direction) {
         let left = parseInt(window.getComputedStyle(player).getPropertyValue('left'));
-        if (direction > 0) {
-          if (left + stepSize < canvas.offsetWidth - player.offsetWidth) {
-            player.style.left = `${left + stepSize}px`;
-          }
-        } else {
-          if (left > 0) {
-            player.style.left = `${left - stepSize}px`;
-          }
-        }
+        if (direction > 0 && left + stepSize < canvas.offsetWidth - player.offsetWidth)
+          player.style.left = `${left + stepSize}px`;
+        else if (direction < 0 && left > 0) player.style.left = `${left - stepSize}px`;
       }
-
-      //   function moveUp() {
-      //     let top = parseInt(window.getComputedStyle(player).getPropertyValue('top'));
-      //     if (top > 0) {
-      //       player.style.top = `${top - stepSize}px`;
-      //     }
-      //   }
-
-      //   function moveDown() {
-      //     let top = parseInt(window.getComputedStyle(player).getPropertyValue('top'));
-      //     if (top + stepSize < canvas.offsetHeight - player.offsetHeight) {
-      //       player.style.top = `${top + stepSize}px`;
-      //     }
-      //   }
-
-      //   function moveLeft() {
-      //     let left = parseInt(window.getComputedStyle(player).getPropertyValue('left'));
-      //     if (left > 0) {
-      //       player.style.left = `${left - stepSize}px`;
-      //     }
-      //   }
-
-      //   function moveRight() {
-      //     let left = parseInt(window.getComputedStyle(player).getPropertyValue('left'));
-      //     if (left + stepSize < canvas.offsetWidth - player.offsetWidth) {
-      //       player.style.left = `${left + stepSize}px`;
-      //     }
-      //   }
     </script>
   </body>
 </html>
