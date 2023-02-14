@@ -5,6 +5,11 @@ export type GamepadHandler = Record<number, ((gamepad: Gamepad) => void)[]>;
 
 export type ActionHandler = Record<string, (value?: number) => void>;
 
+export interface IProxyEventOption {
+  value?: number;
+  event: 'changed' | 'pressed' | 'released' | 'repeat';
+}
+
 interface InputHandlerActionDefinition {
   type: InputHandlerType;
   options?: IProxyEventOption;
@@ -28,11 +33,6 @@ export interface ActionModel {
 }
 
 export type RegisteredActions = Record<InputHandlerType, Record<string | number, ActionModel>>;
-
-export interface IProxyEventOption {
-  value?: number;
-  event: 'changed' | 'pressed' | 'released' | 'repeat';
-}
 
 export interface IProxyInputEventHandler {
   on: (eventName: number | string, callback: (value?: number) => void, eventType?: InputEventType) => void;

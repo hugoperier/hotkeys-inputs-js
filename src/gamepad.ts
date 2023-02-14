@@ -1,6 +1,5 @@
 import { ILiteEvent, LiteEvent } from './LiteEvents';
 import { InputEventType, IProxyEventOption, IProxyInputEventHandler } from './types';
-import { defaultOpts } from './utils';
 
 interface KeyEventAction<T> {
   changed: ILiteEvent<T>;

@@ -1,6 +1,5 @@
 import { IProxyEventOption, IProxyInputEventHandler } from './types';
 import hotkeys, { HotkeysEvent } from 'hotkeys-js';
-import { defaultOpts } from './utils';
 
 const keyboardProxy: IProxyInputEventHandler = {
   on: function (eventName, callback, event = 'changed') {
