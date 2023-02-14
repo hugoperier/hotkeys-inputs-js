@@ -81,7 +81,6 @@ const inputAction: InputActions = {
   },
   onInputActions: function (id: string, handlers: ActionHandler, unsubscribedCallback: Function) {
     const idsPendingDeletion = new Set<string>();
-    console.log('registering', id);
 
     // First, registering actions to input, and saving ids for action to be cleaned up
     Object.entries(handlers).forEach(([k, v]) => {
@@ -89,17 +88,28 @@ const inputAction: InputActions = {
 
       registeredInputTrigger.forEach((action) => {
         // If already defined, saving id, unsubcribe the event and registering the new one
-        if (this.registeredActions[action.type][action.key]) {
-          idsPendingDeletion.add(this.registeredActions[action.type][action.key].id);
-          // inputHandler[action.type][action.key].off(action.callback)
-          this.handlers[action.type].handler?.off(action.key);
+        const previouslyRegistered = this.registeredActions[action.type][action.key];
+        if (previouslyRegistered) {
+          idsPendingDeletion.add(previouslyRegistered.id);
+          this.handlers[action.type].handler?.off(action.key, previouslyRegistered.handler);
         }
 
-        this.handlers[action.type].handler?.on(action.key, v, action.options);
+        const onInputEvent = (value: number | undefined) => {
+          if (!this.handlers[action.type].enabled) return;
+          if (!value) {
+            v();
+            return;
+          }
+          const adjustedValue =
+            value === 1 ? action.options?.value ?? 1 : value === 0 ? 0 : ((action.options?.value ?? 1) / 1) * value;
+          v(adjustedValue);
+        };
         this.registeredActions[action.type][action.key] = {
-          handler: v,
+          handler: onInputEvent,
           id,
         };
+        onInputEvent.bind(this); //test to remove it
+        this.handlers[action.type].handler?.on(action.key, onInputEvent, action.options?.event);
       });
     });
     this.unregisterActionsCallbacks[id] = unsubscribedCallback;
@@ -107,8 +117,7 @@ const inputAction: InputActions = {
     this.supportedInputHandlers.forEach((e) => {
       Object.entries(this.registeredActions[e]).forEach(([k, v]) => {
         if (idsPendingDeletion.has(v.id)) {
-          //inputHandler[action.type][k].off(action.callback)
-          this.handlers[e].handler?.off(k);
+          this.handlers[e].handler?.off(k, v.handler);
           delete this.registeredActions[e][k];
         }
       });
@@ -123,7 +132,6 @@ const inputAction: InputActions = {
     this.supportedInputHandlers.forEach((e) => {
       Object.entries(this.registeredActions[e]).forEach(([k, v]) => {
         if (id === v.id) {
-          // inputHandler[action.type][k].off(action.callback)
           delete this.registeredActions[e][k];
         }
       });

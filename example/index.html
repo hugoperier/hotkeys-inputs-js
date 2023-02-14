@@ -25,7 +25,7 @@
     </div>
     <p>
         <input type="checkbox" id="gamepad-enabled">Gamepad</input>
-        <input type="checkbox" id="keyboard-enabled">Keyboard</input>
+        <input type="checkbox" checked id="keyboard-enabled">Keyboard</input>
       </p>
 
     <script type="module">
@@ -42,18 +42,20 @@
 
       const handleInputDeviceChange = () => {
         const arr = []
-        if (gamepadCheckbox)
+        if (gamepadEnabled)
             arr.push("gamepad")
-        if (keyboardCheckbox)
+        if (keyboardEnabled)
             arr.push("keyboard")
         inputAction.setActiveInputHandlers(arr)
       }
 
       gamepadCheckbox.addEventListener('change', function () {
         gamepadEnabled = this.checked;
+        handleInputDeviceChange()
       });
       keyboardCheckbox.addEventListener('change', function () {
         keyboardEnabled = this.checked;
+        handleInputDeviceChange()
       });
 
       const defaultMapping = {
@@ -70,7 +72,6 @@
       };
 
       inputAction.defineInputActions(defaultMapping);
-
       inputAction.onInputActions(
         `cubeActionHandler`,
         {

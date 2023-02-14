@@ -1,5 +1,5 @@
 import { ILiteEvent, LiteEvent } from './LiteEvents';
-import { IProxyEventOption, IProxyInputEventHandler } from './types';
+import { InputEventType, IProxyEventOption, IProxyInputEventHandler } from './types';
 import { defaultOpts } from './utils';
 
 interface KeyEventAction<T> {
@@ -61,7 +61,7 @@ export interface GamepadPrototype extends IProxyInputEventHandler {
   buttonActions: ButtonActions;
   axesActions: AxesActions;
   pressed: Pressed;
-  on: (eventName: number | string, callback: (value?: number) => void, opts?: IProxyEventOption) => void;
+  on: (eventName: number | string, callback: (value?: number) => void, eventType?: InputEventType) => void;
   off: (eventName: number | string) => void;
   after: (eventName: number | DefaultGamepad, callback: (value?: number) => void) => void;
   before: (eventName: number | DefaultGamepad, callback: (value?: number) => void) => void;
@@ -169,17 +169,15 @@ const gamepad = {
           }
         }
       },
-      on: function (eventName: number | string, callback: (value?: number) => void, opts?: IProxyEventOption) {
-        const options = opts ?? defaultOpts;
-
+      on: function (eventName: number | string, callback: (value?: number) => void, eventType = 'changed') {
         if (eventName < 0) {
           // If subscribing to a joystick event
           const jIndex = Math.floor((Math.abs(eventName as number) - 1) / 2);
           const orientation = (Math.abs(eventName as number) - 1) % 2 === 0 ? 'horizontal' : 'vertical';
-          this.axesActions[jIndex][orientation][options.event].on(callback);
+          this.axesActions[jIndex][orientation][eventType].on(callback);
         } else {
           // If a button
-          this.buttonActions[eventName as number][options.event].on(callback);
+          this.buttonActions[eventName as number][eventType].on(callback);
         }
         return this;
       },

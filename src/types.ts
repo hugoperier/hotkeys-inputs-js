@@ -1,4 +1,5 @@
 export type InputHandlerType = 'keyboard' | 'gamepad';
+export type InputEventType = 'changed' | 'pressed' | 'released' | 'repeat';
 
 export type GamepadHandler = Record<number, ((gamepad: Gamepad) => void)[]>;
 
@@ -34,8 +35,8 @@ export interface IProxyEventOption {
 }
 
 export interface IProxyInputEventHandler {
-  on: (eventName: number | string, callback: (value?: number) => void, opts?: IProxyEventOption) => void;
-  off: (eventName: number | string) => void;
+  on: (eventName: number | string, callback: (value?: number) => void, eventType?: InputEventType) => void;
+  off: (eventName: number | string, callback: (value?: number) => void) => void;
 }
 
 export interface IHandler {
