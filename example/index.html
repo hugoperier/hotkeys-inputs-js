@@ -24,8 +24,8 @@
       <div id="player"></div>
     </div>
     <p>
-        <input type="checkbox" id="gamepad-enabled">Gamepad</input>
-        <input type="checkbox" checked id="keyboard-enabled">Keyboard</input>
+        <input type="checkbox" checked id="gamepad-enabled">Gamepad</input>
+        <input type="checkbox" id="keyboard-enabled">Keyboard</input>
       </p>
 
     <script type="module">
@@ -34,7 +34,7 @@
       const canvas = document.getElementById('canvas');
       const player = document.getElementById('player');
       const stepSize = 10;
-      let gamepadEnabled = false;
+      let gamepadEnabled = true;
       let keyboardEnabled = false;
 
       const gamepadCheckbox = document.getElementById('gamepad-enabled');
@@ -46,6 +46,7 @@
             arr.push("gamepad")
         if (keyboardEnabled)
             arr.push("keyboard")
+          console.log("arrrr", arr)
         inputAction.setActiveInputHandlers(arr)
       }
 
@@ -62,12 +63,12 @@
         directionY: [
           { type: 'keyboard', key: 'w', options: { event: 'repeat', value: 1 } },
           { type: 'keyboard', key: 's', options: { event: 'repeat', value: -1 } },
-          { type: 'gamepad', key: -2 },
+          { type: 'gamepad', key: -2, options: { event: 'repeat', value: -2 } },
         ],
         directionX: [
           { type: 'keyboard', key: 'd', options: { event: 'repeat', value: 1 } },
           { type: 'keyboard', key: 'a', options: { event: 'repeat', value: -1 } },
-          { type: 'gamepad', key: -1 },
+          { type: 'gamepad', key: -1, options: { event: 'repeat', value: 2 } },
         ],
       };
 
@@ -81,20 +82,24 @@
         () => setActive(false),
       );
 
+      handleInputDeviceChange()
+
       function moveY(direction) {
         let top = parseInt(window.getComputedStyle(player).getPropertyValue('top'));
+        const adjustedStepSize = stepSize * Math.abs(direction)
         if (top > 0 && direction > 0) {
-          player.style.top = `${top - stepSize}px`;
+          player.style.top = `${top - adjustedStepSize}px`;
         } else if (direction < 0 && top + stepSize < canvas.offsetHeight - player.offsetHeight) {
-          player.style.top = `${top + stepSize}px`;
+          player.style.top = `${top + adjustedStepSize}px`;
         }
       }
 
       function moveX(direction) {
         let left = parseInt(window.getComputedStyle(player).getPropertyValue('left'));
+        const adjustedStepSize = stepSize * Math.abs(direction)
         if (direction > 0 && left + stepSize < canvas.offsetWidth - player.offsetWidth)
-          player.style.left = `${left + stepSize}px`;
-        else if (direction < 0 && left > 0) player.style.left = `${left - stepSize}px`;
+          player.style.left = `${left + adjustedStepSize}px`;
+        else if (direction < 0 && left > 0) player.style.left = `${left - adjustedStepSize}px`;
       }
     </script>
   </body>

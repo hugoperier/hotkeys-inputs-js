@@ -1,5 +1,6 @@
 import { ILiteEvent, LiteEvent } from './LiteEvents';
 import { InputEventType, IProxyEventOption, IProxyInputEventHandler } from './types';
+import { freqTimer } from './utils';
 
 interface KeyEventAction<T> {
   changed: ILiteEvent<T>;
@@ -57,6 +58,7 @@ export interface GamepadPrototype extends IProxyInputEventHandler {
   vibrationMode: number;
   vibration: boolean;
   mapping: any;
+  timer: DeltaTimer;
   buttonActions: ButtonActions;
   axesActions: AxesActions;
   pressed: Pressed;
@@ -120,6 +122,7 @@ const gamepad = {
       },
       checkStatus: function () {
         let gp = {} as Gamepad;
+        const repeat = freqTimer.tick();
         const gps = navigator.getGamepads
           ? navigator.getGamepads()
           : (navigator as any).webkitGetGamepads
@@ -130,6 +133,7 @@ const gamepad = {
           gp = gps[this.id] as Gamepad;
           if (gp.buttons) {
             for (let x = 0; x < this.buttons; x++) {
+              if (repeat) this.buttonActions[x].repeat.trigger(gp.buttons[x].pressed ? 1 : 0);
               if (gp.buttons[x].pressed === true) {
                 if (!this.pressed[`button${x}`]) {
                   // use a set
@@ -145,25 +149,31 @@ const gamepad = {
           }
           if (gp.axes) {
             for (let x = 0; x < this.axes; x++) {
+              const jIndex = Math.floor(x / 2);
               const modifier = x % 2 === 0 ? 'horizontal' : 'vertical';
+              if (Math.abs(this.axeValues[x]) > this.axeStep) {
+                if (gp.axes[x] === 0 || repeat) this.axesActions[jIndex][modifier].repeat.trigger(gp.axes[x]);
+              }
               if (Math.abs(this.axeValues[x] - gp.axes[x]) < this.axeStep) {
                 // In that case we do nothing, the value has not changed or, under the thresholt.
                 // We do not want to spam the consumer with callback
               } else if (gp.axes[x] === 0 && this.axeValues[x] !== 0) {
                 // If released
-                this.axesActions[x][modifier].changed.trigger(gp.axes[x]);
-                this.axesActions[x][modifier].released.trigger(gp.axes[x]);
+                this.axesActions[jIndex][modifier].changed.trigger(gp.axes[x]);
+                this.axesActions[jIndex][modifier].released.trigger(gp.axes[x]);
                 this.axeValues[x] = gp.axes[x];
               } else if (this.axeValues[x] === 0) {
                 // If activated
-                this.axesActions[x][modifier].changed.trigger(gp.axes[x]);
-                this.axesActions[x][modifier].pressed.trigger(gp.axes[x]);
+                this.axesActions[jIndex][modifier].changed.trigger(gp.axes[x]);
+                this.axesActions[jIndex][modifier].pressed.trigger(gp.axes[x]);
                 this.axeValues[x] = gp.axes[x];
               } else {
                 // Value changed
-                this.axesActions[x][modifier].changed.trigger(gp.axes[x]);
+                console.log('value changed', x, modifier, gp.axes[x], this.axesActions);
+                this.axesActions[jIndex][modifier].changed.trigger(gp.axes[x]);
                 this.axeValues[x] = gp.axes[x];
               }
+              if (gp.axes[x] === 0) this.axeValues[x] = 0;
             }
           }
         }
@@ -173,6 +183,7 @@ const gamepad = {
           // If subscribing to a joystick event
           const jIndex = Math.floor((Math.abs(eventName as number) - 1) / 2);
           const orientation = (Math.abs(eventName as number) - 1) % 2 === 0 ? 'horizontal' : 'vertical';
+          console.log('sibscribing to ', jIndex, orientation, eventType);
           this.axesActions[jIndex][orientation][eventType].on(callback);
         } else {
           // If a button

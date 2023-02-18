@@ -7,7 +7,7 @@ export type ActionHandler = Record<string, (value?: number) => void>;
 
 export interface IProxyEventOption {
   value?: number;
-  event: 'changed' | 'pressed' | 'released' | 'repeat';
+  event: InputEventType;
 }
 
 interface InputHandlerActionDefinition {
@@ -30,6 +30,7 @@ export type InputHandlerDefinedAction = Record<string | number, (KeyboardActionD
 export interface ActionModel {
   handler: (value?: number) => void;
   id: string;
+  event?: InputEventType;
 }
 
 export type RegisteredActions = Record<InputHandlerType, Record<string | number, ActionModel>>;

@@ -51,8 +51,12 @@ const inputAction: InputActions = {
   init: function () {
     gameControl.on('connect', (gamepad) => {
       if (!this.handlers.gamepad.handler) {
-        console.log('gamepad connected with id ', gamepad.id);
+        console.log('gamepad connected with id ', gamepad.id, this.handlers);
         this.handlers.gamepad.handler = gamepad;
+        if (!this.handlers.gamepad.enabled) return;
+        Object.entries(this.registeredActions.gamepad).forEach(([k, v]) => {
+          this.handlers.gamepad.handler?.on(k, v.handler, v.event);
+        });
       }
     });
     gameControl.on('disconnect', (gamepad) => {
@@ -71,6 +75,7 @@ const inputAction: InputActions = {
     else this.handlers.gamepad.enabled = true;
     if (!handlers.includes('keyboard')) this.handlers.keyboard.enabled = false;
     else this.handlers.keyboard.enabled = true;
+    console.log('active handlers: ', this.handlers);
   },
   defineInputActions: function (actions: InputHandlerDefinedAction, opts?: RegisterInputActionOptions) {
     Object.entries(actions).map(([action, definitions]) => {
@@ -95,6 +100,7 @@ const inputAction: InputActions = {
         }
 
         const onInputEvent = (value: number | undefined) => {
+          console.log('onInputEvent',action.type, value);
           if (!this.handlers[action.type].enabled) return;
           if (!value) {
             v();
@@ -107,9 +113,11 @@ const inputAction: InputActions = {
         this.registeredActions[action.type][action.key] = {
           handler: onInputEvent,
           id,
+          event: action.options?.event,
         };
         onInputEvent.bind(this); //test to remove it
-        this.handlers[action.type].handler?.on(action.key, onInputEvent, action.options?.event);
+        if (this.handlers[action.type].enabled)
+          this.handlers[action.type].handler?.on(action.key, onInputEvent, action.options?.event);
       });
     });
     this.unregisterActionsCallbacks[id] = unsubscribedCallback;
@@ -138,5 +146,7 @@ const inputAction: InputActions = {
     });
   },
 };
+
+inputAction.init();
 
 export default inputAction;
