@@ -1,6 +1,6 @@
 {
   "name": "hotkeys-inputs-js",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A javascript library for handling both keyboard and gamepad inputs in web applications.",
   "main": "index.js",
   "scripts": {
@@ -20,6 +20,11 @@
   "bugs": {
     "url": "https://github.com/hugoperier/hotkeys-inputs-js/issues"
   },
+  "files": [
+    "index.d.ts",
+    "dist",
+    "doc"
+  ],
   "homepage": "https://github.com/hugoperier/hotkeys-inputs-js#readme",
   "devDependencies": {
     "@babel/preset-env": "^7.20.2",
