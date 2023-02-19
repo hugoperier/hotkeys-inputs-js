@@ -13,8 +13,9 @@ export interface InputActions {
   definedActions: InputHandlerDefinedAction;
   registeredActions: RegisteredActions;
   unregisterActionsCallbacks: Record<string, Function>;
+  gamepadEnabled: boolean;
+  keyboardEnabled: boolean;
   init: () => void;
-  setActiveInputHandlers: (handlers: InputHandlerType[]) => void;
   defineInputActions: (actions: InputHandlerDefinedAction, opts?: RegisterInputActionOptions) => void;
   /**
    * Subscribe a group of action to events
@@ -47,11 +48,22 @@ const inputAction: InputActions = {
     keyboard: {},
     gamepad: {},
   },
+  get gamepadEnabled() {
+    return this.handlers.gamepad.enabled;
+  },
+  set gamepadEnabled(value: boolean) {
+    this.handlers.gamepad.enabled = value;
+  },
+  get keyboardEnabled() {
+    return this.handlers.keyboard.enabled;
+  },
+  set keyboardEnabled(value: boolean) {
+    this.handlers.keyboard.enabled = value;
+  },
   unregisterActionsCallbacks: {},
   init: function () {
     gameControl.on('connect', (gamepad) => {
       if (!this.handlers.gamepad.handler) {
-        console.log('gamepad connected with id ', gamepad.id, this.handlers);
         this.handlers.gamepad.handler = gamepad;
         if (!this.handlers.gamepad.enabled) return;
         Object.entries(this.registeredActions.gamepad).forEach(([k, v]) => {
@@ -61,7 +73,6 @@ const inputAction: InputActions = {
     });
     gameControl.on('disconnect', (gamepad) => {
       if (gamepad.id === (this.handlers.gamepad.handler as GamepadPrototype).id) {
-        console.log('gamepad disconnected with id ', gamepad.id);
         this.handlers.gamepad.handler = undefined;
       }
     });
@@ -69,13 +80,6 @@ const inputAction: InputActions = {
       if (v !== null && v.id !== (this.handlers.gamepad.handler as GamepadPrototype).id)
         this.handlers.gamepad.handler = v;
     });
-  },
-  setActiveInputHandlers: function (handlers: InputHandlerType[]) {
-    if (!handlers.includes('gamepad')) this.handlers.gamepad.enabled = false;
-    else this.handlers.gamepad.enabled = true;
-    if (!handlers.includes('keyboard')) this.handlers.keyboard.enabled = false;
-    else this.handlers.keyboard.enabled = true;
-    console.log('active handlers: ', this.handlers);
   },
   defineInputActions: function (actions: InputHandlerDefinedAction, opts?: RegisterInputActionOptions) {
     Object.entries(actions).map(([action, definitions]) => {
@@ -100,7 +104,6 @@ const inputAction: InputActions = {
         }
 
         const onInputEvent = (value: number | undefined) => {
-          console.log('onInputEvent',action.type, value);
           if (!this.handlers[action.type].enabled) return;
           if (!value) {
             v();
