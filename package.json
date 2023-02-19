@@ -14,8 +14,8 @@
     "type": "git",
     "url": "git+https://github.com/hugoperier/hotkeys-inputs-js.git"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": ["keyboard", "gamepad", "hotkeys", "input", "javascript", "joystick", "mapping"],
+  "author": "Hugo PERIER",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/hugoperier/hotkeys-inputs-js/issues"

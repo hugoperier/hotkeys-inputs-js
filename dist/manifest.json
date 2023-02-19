@@ -1,0 +1,7 @@
+{
+  "src/inputActions.ts": {
+    "file": "hotkeys-inputs-js.mjs",
+    "isEntry": true,
+    "src": "src/inputActions.ts"
+  }
+}
