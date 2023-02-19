@@ -2,6 +2,10 @@
 
 hotkeys-inputs-js is a javascript library for handling both keyboard and gamepad inputs in web applications. This is the ideal solution for your project if you need to work with both a keyboard and gamepad, and frequently need to activate or deactivate input events to manage actions.
 
+![GitHub package version](https://img.shields.io/github/package-json/v/hugoperier/hotkeys-inputs-js)
+![NPM](https://img.shields.io/npm/l/hotkeys-inputs-js)
+
+
 ## Features
 
 - Subscribe to gamepad events such as button presses and joystick movements

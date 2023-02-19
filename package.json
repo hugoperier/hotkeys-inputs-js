@@ -1,8 +1,9 @@
 {
   "name": "hotkeys-inputs-js",
-  "version": "1.0.2",
+  "version": "1.0.4",
   "description": "A javascript library for handling both keyboard and gamepad inputs in web applications.",
-  "main": "index.js",
+  "main": "index.ts",
+  "types": "dist/inputActions.d.ts",
   "scripts": {
     "build": "tsc && vite build",
     "build:watch": "tsc && vite build --watch",
@@ -14,16 +15,22 @@
     "type": "git",
     "url": "git+https://github.com/hugoperier/hotkeys-inputs-js.git"
   },
-  "keywords": ["keyboard", "gamepad", "hotkeys", "input", "javascript", "joystick", "mapping"],
+  "keywords": [
+    "keyboard",
+    "gamepad",
+    "hotkeys",
+    "input",
+    "javascript",
+    "joystick",
+    "mapping"
+  ],
   "author": "Hugo PERIER",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/hugoperier/hotkeys-inputs-js/issues"
   },
   "files": [
-    "index.d.ts",
-    "dist",
-    "doc"
+    "dist"
   ],
   "homepage": "https://github.com/hugoperier/hotkeys-inputs-js#readme",
   "devDependencies": {
