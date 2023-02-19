@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      #canvas {
+        border: 1px solid black;
+        width: 500px;
+        height: 500px;
+        position: relative;
+      }
+      #player {
+        width: 50px;
+        height: 50px;
+        background-color: red;
+        position: absolute;
+        left: 0;
+        top: 0;
+      }
+    </style>
+    <script type="module" src="../dist/hotkeys-inputs-js.mjs"></script>
+  </head>
+  <body>
+    <div id="canvas">
+      <div id="player"></div>
+    </div>
+    <p>
+        <input type="checkbox" id="gamepad-enabled">Gamepad</input>
+        <input type="checkbox" checked id="keyboard-enabled">Keyboard</input>
+      </p>
+
+    <script type="module">
+      import inputAction from '../dist/hotkeys-inputs-js.mjs';
+
+      const canvas = document.getElementById('canvas');
+      const player = document.getElementById('player');
+      const stepSize = 10;
+
+      const gamepadCheckbox = document.getElementById('gamepad-enabled');
+      const keyboardCheckbox = document.getElementById('keyboard-enabled');
+
+      gamepadCheckbox.addEventListener('change', function () {
+        inputAction.gamepadEnabled = this.checked;
+      });
+      keyboardCheckbox.addEventListener('change', function () {
+        inputAction.keyboardEnabled = this.checked;
+      });
+
+      const defaultMapping = {
+        directionY: [
+          { type: 'keyboard', key: 'w', options: { event: 'repeat', value: 1 } },
+          { type: 'keyboard', key: 's', options: { event: 'repeat', value: -1 } },
+          { type: 'gamepad', key: -2, options: { event: 'repeat', value: -2 } },
+        ],
+        directionX: [
+          { type: 'keyboard', key: 'd', options: { event: 'repeat', value: 1 } },
+          { type: 'keyboard', key: 'a', options: { event: 'repeat', value: -1 } },
+          { type: 'gamepad', key: -1, options: { event: 'repeat', value: 2 } },
+        ],
+      };
+
+      inputAction.defineInputActions(defaultMapping);
+      inputAction.onInputActions(
+        `cubeActionHandler`,
+        {
+          directionX: (v) => moveX(v),
+          directionY: (v) => moveY(v),
+        },
+        () => setActive(false),
+      );
+
+      function moveY(direction) {
+        let top = parseInt(window.getComputedStyle(player).getPropertyValue('top'));
+        const adjustedStepSize = stepSize * Math.abs(direction)
+        if (top > 0 && direction > 0) {
+          player.style.top = `${top - adjustedStepSize}px`;
+        } else if (direction < 0 && top + stepSize < canvas.offsetHeight - player.offsetHeight) {
+          player.style.top = `${top + adjustedStepSize}px`;
+        }
+      }
+
+      function moveX(direction) {
+        let left = parseInt(window.getComputedStyle(player).getPropertyValue('left'));
+        const adjustedStepSize = stepSize * Math.abs(direction)
+        if (direction > 0 && left + stepSize < canvas.offsetWidth - player.offsetWidth)
+          player.style.left = `${left + adjustedStepSize}px`;
+        else if (direction < 0 && left > 0) player.style.left = `${left - adjustedStepSize}px`;
+      }
+    </script>
+  </body>
+</html>
