@@ -99,6 +99,8 @@ const inputAction: InputActions = {
         // If already defined, saving id, unsubcribe the event and registering the new one
         const previouslyRegistered = this.registeredActions[action.type][action.key];
         if (previouslyRegistered) {
+          if (previouslyRegistered.id === id)
+            throw new Error(`There is already a group of event registered under the id [${id}]. Unsubscribe this group of event before registering a new one`)
           idsPendingDeletion.add(previouslyRegistered.id);
           this.handlers[action.type].handler?.off(action.key, previouslyRegistered.handler);
         }
