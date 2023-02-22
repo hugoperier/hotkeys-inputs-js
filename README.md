@@ -139,6 +139,15 @@ The offInputActions function is used to unregister a previously registered group
 inputAction.offInputActions(`moveActions`)
 ```
 
+# Testing
+
+*I have been using node 14.18.0 for the development*
+
+- Clone the repository
+- Run `npm install` and then `npm build`
+- use the `index.html`
+- Happy coding!
+
 # Contributing
 
 If you would like to contribute to the development of this library, please reach out to us. We welcome contributions of all kinds, from bug reports and fixes to new features and improvements.
