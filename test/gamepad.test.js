@@ -6,6 +6,17 @@ const wait = async (t) =>
     setTimeout(res, t);
   });
 
+Object.defineProperty(global.navigator, 'getGamepads', {
+  value: () => {
+    const mock2 = getMock();
+    mock2.buttons[1] = {
+      pressed: true,
+    };
+    mock2.axes[0] = 0.18;
+    return [mock2];
+  },
+});
+
 describe('test gamepad handler', () => {
   test('initialize', () => {
     const gamepadMock = getMock();
@@ -66,16 +77,6 @@ describe('test gamepad handler', () => {
     gp.on(DefaultGamepad.LeftJoystickAxeX, onJoystickEvent, 'pressed');
     gp.on(DefaultGamepad.KeyA, onButtonPressed, 'changed');
 
-    global.navigator = {
-      getGamepads: () => {
-        const mock2 = getMock();
-        mock2.buttons[1] = {
-          pressed: true,
-        };
-        mock2.axes[0] = 0.18;
-        return [mock2];
-      },
-    };
     gp.checkStatus();
     expect(onJoystickEvent).toHaveBeenCalledTimes(1);
     expect(onButtonPressed).toHaveBeenCalledTimes(1);
@@ -88,13 +89,6 @@ describe('test gamepad handler', () => {
 
     const onJoystickEvent = jest.fn();
     gp.on(DefaultGamepad.LeftJoystickAxeX, onJoystickEvent, 'repeat');
-    global.navigator = {
-      getGamepads: () => {
-        const mock2 = getMock();
-        mock2.axes[0] = 0.18;
-        return [mock2];
-      },
-    };
     const timer = setInterval(() => {
       gp.checkStatus();
     }, 1000 / 60); // 60fps to simulate the animate
