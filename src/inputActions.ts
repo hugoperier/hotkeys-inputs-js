@@ -31,7 +31,7 @@ export interface InputActions {
   offInputActions: (id: string) => void;
 }
 
-const inputAction: InputActions = {
+const inputActions: InputActions = {
   supportedInputHandlers: ['keyboard', 'gamepad'],
   handlers: {
     keyboard: {
@@ -152,6 +152,6 @@ const inputAction: InputActions = {
   },
 };
 
-inputAction.init();
+inputActions.init();
 
-export default inputAction;
+export default inputActions;
