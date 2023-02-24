@@ -44,9 +44,39 @@ describe('inputActions', () => {
     inputActions.registeredActions.keyboard['a'].handler(1);
     expect(onAction).toHaveBeenCalledTimes(1);
     expect(onAction).toHaveBeenCalledWith(-1);
+    inputActions.offInputActions('test');
   });
-  test('trigger analog action');
-  test.todo('trigger action on disabled input')
-  test.todo('unregister action');
+  test('trigger analog action', () => {
+    inputActions.defineInputActions(defaultMapping);
+    inputActions.handlers.gamepad.enabled = true;
+    const onAction = jest.fn();
+    inputActions.onInputActions('test', {
+      directionX: onAction,
+    });
+    inputActions.registeredActions.gamepad[DefaultGamepad.LeftJoystickAxeX].handler(1);
+    expect(onAction).toHaveBeenCalledWith(2);
+    inputActions.offInputActions('test');
+  });
 
+  test('trigger action on disabled input', () => {
+    inputActions.defineInputActions(defaultMapping);
+    inputActions.handlers.gamepad.enabled = false;
+    const onAction = jest.fn();
+    inputActions.onInputActions('test', {
+      directionX: onAction,
+    });
+    inputActions.registeredActions.gamepad[DefaultGamepad.LeftJoystickAxeX].handler(1);
+    expect(onAction).not.toHaveBeenCalled();
+    inputActions.offInputActions('test');
+  });
+  test('unregister action', () => {
+    inputActions.defineInputActions(defaultMapping);
+    const onAction = jest.fn();
+    inputActions.onInputActions('test', {
+      directionX: onAction,
+    });
+    inputActions.offInputActions('test');
+    expect(inputActions.registeredActions.keyboard['a']).not.toBeDefined();
+    expect(onAction).not.toHaveBeenCalled();
+  });
 });
