@@ -14,8 +14,14 @@ hotkeys-inputs-js is a javascript library for handling both keyboard and gamepad
 
 ## Installation
 
-```
+```bash
 npm install hotkeys-input-js
+```
+
+or
+
+```bash
+yarn add hotkeys-input-js
 ```
 
 ## Simple usage
@@ -36,10 +42,10 @@ const defaultMapping = {
 };
 
 // Register previously defined actions
-inputAction.defineInputActions(defaultMapping);
+inputActions.defineInputActions(defaultMapping);
 
 // Register events from the group of action, defines callback for when an event is triggered
-inputAction.onInputActions(`moveActions`, {
+inputActions.onInputActions(`moveActions`, {
   directionX: (v) => moveX(v),
   directionY: (v) => moveY(v),
 });
@@ -49,7 +55,7 @@ inputAction.onInputActions(`moveActions`, {
 
 ## defineInputActions
 
-To specify the different sets of actions that your application will support, employ the inputAction.defineInputActions function. Note that this function does not attach any event listeners; rather, it serves as a way to enumerate all the actions that your app can handle. When utilizing the override parameter, any previously defined actions will be replaced, while not providing this parameter will result in an error being thrown.
+To specify the different sets of actions that your application will support, employ the inputActions.defineInputActions function. Note that this function does not attach any event listeners; rather, it serves as a way to enumerate all the actions that your app can handle. When utilizing the override parameter, any previously defined actions will be replaced, while not providing this parameter will result in an error being thrown.
 
 **Mapping an action to handlers**
 
@@ -91,22 +97,22 @@ const mapping2 = {
 };
 
 // works
-inputAction.defineInputActions(mapping1);
-inputAction.defineInputActions(mapping2);
+inputActions.defineInputActions(mapping1);
+inputActions.defineInputActions(mapping2);
 
 // throw an error, it has already been defined
-inputAction.defineInputActions(mapping1);
+inputActions.defineInputActions(mapping1);
 
 // works
-inputAction.defineInputActions(mapping1, { override: true });
+inputActions.defineInputActions(mapping1, { override: true });
 ```
 
 ## onInputActions
 
-The inputAction.onInputActions function allows you to register a collection of actions to functions, which will be invoked with the value provided in the mapping when a given action is triggered. The function takes the following parameters:
+The inputActions.onInputActions function allows you to register a collection of actions to functions, which will be invoked with the value provided in the mapping when a given action is triggered. The function takes the following parameters:
 
 ```javascript
-inputAction.onInputActions(id: string, handlers: Record<string, function>, unsubscribedCallback: function )
+inputActions.onInputActions(id: string, handlers: Record<string, function>, unsubscribedCallback: function )
 ```
 
 `id`: The ID of the group of actions to subscribe. The group ID must be unique and no duplicates are allowed. You can use this ID to later unsubscribe the group of actions related to it.
@@ -121,12 +127,16 @@ const mapping1 = {
   directionX: [{ type: 'keyboard', key: 'd', options: { event: 'repeat', value: 1 } }],
 };
 
-inputAction.defineInputActions(mapping1);
+inputActions.defineInputActions(mapping1);
 
-inputAction.onInputActions(`moveActions`, {
-  directionX: (v) => moveX(v),
-  directionY: (v) => moveY(v),
-}, myCallbackWhenUnregisters);
+inputActions.onInputActions(
+  `moveActions`,
+  {
+    directionX: (v) => moveX(v),
+    directionY: (v) => moveY(v),
+  },
+  myCallbackWhenUnregisters,
+);
 ```
 
 ## offInputActions
@@ -136,12 +146,28 @@ The offInputActions function is used to unregister a previously registered group
 `id`: The ID of the group of actions to unsubscribe.
 
 ```javascript
-inputAction.offInputActions(`moveActions`)
+inputActions.offInputActions(`moveActions`);
+```
+
+## Enable or disable handlers
+
+You can enable or disable the support for an input handler. If the handler is disabled, it will not fire the action if the input is triggered.
+
+**Note that only the keyboard is enabled by default**
+
+```javascript
+//enable
+inputActions.keyboardEnabled = true;
+inputActions.gamepadEnabled = true;
+
+//disable
+inputActions.keyboardEnabled = false;
+inputActions.gamepadEnabled = false;
 ```
 
 # Testing
 
-*I have been using node 14.18.0 for the development*
+_I have been using node 14.18.0 for the development_
 
 - Clone the repository
 - Run `npm install` and then `npm build`
