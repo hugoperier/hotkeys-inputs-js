@@ -2,8 +2,6 @@ name: CI
 on:
   push:
       - master
-    tags:
-      - v*
 
 env:
   SKIP_PREFLIGHT_CHECK: true
