@@ -1,11 +1,14 @@
 import gameControl from './gamecontrol';
-import { GamepadPrototype } from './gamepad';
 import keyboardProxy from './keyboardproxy';
-import { ActionHandler, IHandler, InputHandlerDefinedAction, InputHandlerType, RegisteredActions } from './types';
-
-interface RegisterInputActionOptions {
-  override?: boolean;
-}
+import {
+  ActionHandler,
+  GamepadPrototype,
+  IHandler,
+  InputHandlerDefinedAction,
+  InputHandlerType,
+  RegisteredActions,
+  RegisterInputActionOptions,
+} from './types';
 
 export interface InputActions {
   supportedInputHandlers: Readonly<InputHandlerType[]>;

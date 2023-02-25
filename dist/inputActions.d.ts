@@ -1,7 +1,4 @@
-import { ActionHandler, IHandler, InputHandlerDefinedAction, InputHandlerType, RegisteredActions } from './types';
-interface RegisterInputActionOptions {
-    override?: boolean;
-}
+import { ActionHandler, IHandler, InputHandlerDefinedAction, InputHandlerType, RegisteredActions, RegisterInputActionOptions } from './types';
 export interface InputActions {
     supportedInputHandlers: Readonly<InputHandlerType[]>;
     handlers: Record<InputHandlerType, IHandler>;
@@ -11,6 +8,13 @@ export interface InputActions {
     gamepadEnabled: boolean;
     keyboardEnabled: boolean;
     init: () => void;
+    /**
+     * Defines the different sets of actions that the application will
+     * support by enumerating all the actions that can be handled.
+     * @param actions An object whose keys represent the action names that the mappings are associated with, and whose values are arrays of
+     * objects that specify the inputs that trigger the associated action.
+     * @param opts Options for the definition of inputActions
+     */
     defineInputActions: (actions: InputHandlerDefinedAction, opts?: RegisterInputActionOptions) => void;
     /**
      * Subscribe a group of action to events
@@ -23,7 +27,12 @@ export interface InputActions {
      * @param {Function} unsubscribedCallBack - This function is called when handlers unmounts
      */
     onInputActions: (id: string, handlers: ActionHandler, unsubscribedCallback: Function) => void;
+    /**
+     * Unregisters a previously registered group of input actions.
+     * @param {string} id - The ID of the group of actions to unsubscribe.
+     */
     offInputActions: (id: string) => void;
 }
-declare const inputAction: InputActions;
-export default inputAction;
+declare const inputActions: InputActions;
+export default inputActions;
+//# sourceMappingURL=inputActions.d.ts.map

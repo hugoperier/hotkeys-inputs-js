@@ -1,6 +1,32 @@
 {
+  "_gamepad-22688b91.js": {
+    "file": "gamepad-22688b91.js"
+  },
+  "_gamepad-6ced0b39.mjs": {
+    "file": "gamepad-6ced0b39.mjs"
+  },
+  "src/gamecontrol.ts": {
+    "file": "gamecontrol.js",
+    "imports": [
+      "_gamepad-22688b91.js"
+    ],
+    "isEntry": true,
+    "src": "src/gamecontrol.ts"
+  },
+  "src/gamepad.ts": {
+    "file": "gamepad.js",
+    "imports": [
+      "_gamepad-22688b91.js"
+    ],
+    "isEntry": true,
+    "src": "src/gamepad.ts"
+  },
   "src/inputActions.ts": {
-    "file": "hotkeys-inputs-js.mjs",
+    "file": "inputActions.js",
+    "imports": [
+      "src/gamecontrol.ts",
+      "_gamepad-22688b91.js"
+    ],
     "isEntry": true,
     "src": "src/inputActions.ts"
   }

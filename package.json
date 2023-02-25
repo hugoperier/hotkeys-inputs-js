@@ -1,9 +1,9 @@
 {
   "name": "hotkeys-inputs-js",
-  "version": "1.0.4",
+  "version": "1.0.9",
   "description": "A javascript library for handling both keyboard and gamepad inputs in web applications.",
   "main": "index.ts",
-  "types": "dist/inputActions.d.ts",
+  "types": "index.d.ts",
   "scripts": {
     "build": "tsc && vite build",
     "build:watch": "tsc && vite build --watch",

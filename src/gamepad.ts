@@ -1,72 +1,6 @@
-import { ILiteEvent, LiteEvent } from './LiteEvents';
-import { InputEventType, IProxyInputEventHandler } from './types';
+import { LiteEvent } from './LiteEvents';
+import { GamepadPrototype } from './types';
 import { freqTimer } from './utils';
-
-interface KeyEventAction<T> {
-  changed: ILiteEvent<T>;
-  pressed: ILiteEvent<T>;
-  released: ILiteEvent<T>;
-  repeat: ILiteEvent<T>;
-}
-
-interface ButtonActions {
-  [index: number]: KeyEventAction<number>;
-}
-
-export enum DefaultGamepad {
-  LeftJoystickAxeX = -1,
-  LeftJoystickAxeY = -2,
-  RightJoystickAxeX = -3,
-  RightJoystickAxeY = -4,
-  KeyA = 1,
-  KeyB = 0,
-  KeyX = 3,
-  KeyY = 2,
-  KeyUp = 12,
-  KeyDown = 13,
-  KeyLeft = 14,
-  KeyRight = 15,
-  KeyR1 = 5,
-  KeyR2 = 7,
-  KeyL1 = 4,
-  KeyL2 = 6,
-  KeyStart = 16,
-  KeyOpts = 17,
-  KeyPlus = 9,
-  KeyMinus = 8,
-}
-
-interface AxesActions {
-  [index: string]: {
-    vertical: KeyEventAction<number>;
-    horizontal: KeyEventAction<number>;
-  };
-}
-
-interface Pressed {
-  [index: string]: boolean;
-}
-
-export interface GamepadPrototype extends IProxyInputEventHandler {
-  id: number;
-  buttons: number;
-  axes: number;
-  axeValues: number[];
-  axeThreshold: number[];
-  axeStep: number;
-  hapticActuator: any;
-  vibrationMode: number;
-  vibration: boolean;
-  mapping: any;
-  buttonActions: ButtonActions;
-  axesActions: AxesActions;
-  pressed: Pressed;
-  on: (eventName: number | string, callback: (value?: number) => void, eventType?: InputEventType) => void;
-  off: (eventName: number | string) => void;
-  set: (property: string, value: any) => void;
-  vibrate: (value?: number, duration?: number) => void;
-  checkStatus: () => void;
-}
 
 const makeEmptyEvents = <T>() => ({
   changed: new LiteEvent<T>(),
@@ -133,7 +67,6 @@ const gamepad = {
               if (repeat) this.buttonActions[x].repeat.trigger(gp.buttons[x].pressed ? 1 : 0);
               if (gp.buttons[x].pressed === true) {
                 if (!this.pressed[`button${x}`]) {
-                  // use a set
                   this.pressed[`button${x}`] = true;
                   this.buttonActions[x].pressed.trigger(1);
                 }
@@ -214,7 +147,6 @@ const gamepad = {
         vertical: makeEmptyEvents(),
         horizontal: makeEmptyEvents(),
       };
-      // gamepadPrototype.axeValues[x] = [0, 0];
     }
 
     if (gpad.hapticActuators) {

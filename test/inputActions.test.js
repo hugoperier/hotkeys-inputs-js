@@ -1,5 +1,5 @@
 import inputActions from '../src/inputActions';
-import { DefaultGamepad } from '../src/gamepad';
+import { DefaultGamepad } from '../src/types';
 
 describe('inputActions', () => {
   const defaultMapping = {

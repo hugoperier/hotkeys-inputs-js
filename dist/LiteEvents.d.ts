@@ -15,3 +15,4 @@ export declare class LiteEvent<T> implements ILiteEvent<T> {
     trigger(data: T): Promise<void>;
     expose(): ILiteEvent<T>;
 }
+//# sourceMappingURL=LiteEvents.d.ts.map

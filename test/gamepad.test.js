@@ -1,5 +1,6 @@
-import gamepad, { DefaultGamepad } from '../src/gamepad';
+import gamepad from '../src/gamepad';
 import { getMock } from './mock.gamepad';
+import { DefaultGamepad } from '../src/types';
 
 const wait = async (t) =>
   new Promise((res) => {

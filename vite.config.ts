@@ -1,16 +1,16 @@
-import { defineConfig } from "vite";
+import { defineConfig } from 'vite';
 
-import typescript from "@rollup/plugin-typescript";
-import path from "path";
-import { typescriptPaths } from "rollup-plugin-typescript-paths";
+import typescript from '@rollup/plugin-typescript';
+import path from 'path';
+import { typescriptPaths } from 'rollup-plugin-typescript-paths';
 
 export default defineConfig({
   plugins: [],
   resolve: {
     alias: [
       {
-        find: "~",
-        replacement: path.resolve(__dirname, "./src"),
+        find: '~',
+        replacement: path.resolve(__dirname, './src'),
       },
     ],
   },
@@ -22,8 +22,8 @@ export default defineConfig({
     minify: true,
     reportCompressedSize: true,
     lib: {
-      entry: path.resolve(__dirname, "src/inputActions.ts"),
-      formats: ["es", "cjs"],
+      entry: [path.resolve(__dirname, 'src/inputActions.ts'), path.resolve(__dirname, 'src/gamecontrol.ts'), path.resolve(__dirname, 'src/gamepad.ts')],
+      formats: ['es', 'cjs'],
     },
     rollupOptions: {
       external: [],
@@ -34,7 +34,7 @@ export default defineConfig({
         typescript({
           sourceMap: false,
           declaration: true,
-          outDir: "dist",
+          outDir: 'dist',
         }),
       ],
     },
