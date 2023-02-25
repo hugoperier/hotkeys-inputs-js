@@ -45,5 +45,5 @@ jobs:
 
       - name: Generating coverage badges
         uses: jpb06/jest-badges-action@latest
-        # with:
-        #   branches: master
+        with:
+          branches: '1.1.0'
