@@ -20,11 +20,7 @@ const keyboardProxy: IProxyInputEventHandler = {
   },
   off: function (eventName, handler) {
     hotkeys.unbind(eventName as string);
-  }, // todo save function ref to unhandle it properly
+  },
 };
 
 export default keyboardProxy;
-
-// 3 implement options for gamepad
-// 4 test with gamepad
-// 5 test switch

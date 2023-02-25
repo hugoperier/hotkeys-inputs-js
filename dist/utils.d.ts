@@ -4,3 +4,4 @@ interface DeltaTimer {
 }
 declare const freqTimer: DeltaTimer;
 export { freqTimer };
+//# sourceMappingURL=utils.d.ts.map

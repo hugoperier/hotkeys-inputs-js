@@ -1,11 +1,14 @@
 import gameControl from './gamecontrol';
-import { GamepadPrototype } from './gamepad';
 import keyboardProxy from './keyboardproxy';
-import { ActionHandler, IHandler, InputHandlerDefinedAction, InputHandlerType, RegisteredActions } from './types';
-
-interface RegisterInputActionOptions {
-  override?: boolean;
-}
+import {
+  ActionHandler,
+  GamepadPrototype,
+  IHandler,
+  InputHandlerDefinedAction,
+  InputHandlerType,
+  RegisteredActions,
+  RegisterInputActionOptions,
+} from './types';
 
 export interface InputActions {
   supportedInputHandlers: Readonly<InputHandlerType[]>;
@@ -16,6 +19,13 @@ export interface InputActions {
   gamepadEnabled: boolean;
   keyboardEnabled: boolean;
   init: () => void;
+  /**
+   * Defines the different sets of actions that the application will
+   * support by enumerating all the actions that can be handled.
+   * @param actions An object whose keys represent the action names that the mappings are associated with, and whose values are arrays of
+   * objects that specify the inputs that trigger the associated action.
+   * @param opts Options for the definition of inputActions
+   */
   defineInputActions: (actions: InputHandlerDefinedAction, opts?: RegisterInputActionOptions) => void;
   /**
    * Subscribe a group of action to events
@@ -28,10 +38,14 @@ export interface InputActions {
    * @param {Function} unsubscribedCallBack - This function is called when handlers unmounts
    */
   onInputActions: (id: string, handlers: ActionHandler, unsubscribedCallback: Function) => void;
+  /**
+   * Unregisters a previously registered group of input actions.
+   * @param {string} id - The ID of the group of actions to unsubscribe.
+   */
   offInputActions: (id: string) => void;
 }
 
-const inputAction: InputActions = {
+const inputActions: InputActions = {
   supportedInputHandlers: ['keyboard', 'gamepad'],
   handlers: {
     keyboard: {
@@ -99,6 +113,10 @@ const inputAction: InputActions = {
         // If already defined, saving id, unsubcribe the event and registering the new one
         const previouslyRegistered = this.registeredActions[action.type][action.key];
         if (previouslyRegistered) {
+          if (previouslyRegistered.id === id)
+            throw new Error(
+              `There is already a group of event registered under the id [${id}]. Unsubscribe this group of event before registering a new one`,
+            );
           idsPendingDeletion.add(previouslyRegistered.id);
           this.handlers[action.type].handler?.off(action.key, previouslyRegistered.handler);
         }
@@ -150,6 +168,6 @@ const inputAction: InputActions = {
   },
 };
 
-inputAction.init();
+inputActions.init();
 
-export default inputAction;
+export default inputActions;

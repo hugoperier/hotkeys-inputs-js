@@ -29,7 +29,7 @@
       </p>
 
     <script type="module">
-      import inputAction from '../dist/hotkeys-inputs-js.mjs';
+      import inputActions from '../dist/hotkeys-inputs-js.mjs';
 
       const canvas = document.getElementById('canvas');
       const player = document.getElementById('player');
@@ -39,10 +39,10 @@
       const keyboardCheckbox = document.getElementById('keyboard-enabled');
 
       gamepadCheckbox.addEventListener('change', function () {
-        inputAction.gamepadEnabled = this.checked;
+        inputActions.gamepadEnabled = this.checked;
       });
       keyboardCheckbox.addEventListener('change', function () {
-        inputAction.keyboardEnabled = this.checked;
+        inputActions.keyboardEnabled = this.checked;
       });
 
       const defaultMapping = {
@@ -58,8 +58,8 @@
         ],
       };
 
-      inputAction.defineInputActions(defaultMapping);
-      inputAction.onInputActions(
+      inputActions.defineInputActions(defaultMapping);
+      inputActions.onInputActions(
         `cubeActionHandler`,
         {
           directionX: (v) => moveX(v),
