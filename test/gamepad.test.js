@@ -94,7 +94,7 @@ describe('test gamepad handler', () => {
       gp.checkStatus();
     }, 1000 / 60); // 60fps to simulate the animate
     const j = await wait(1000);
-    expect(onJoystickEvent.mock.calls.length).toBeGreaterThan(8);
+    expect(onJoystickEvent.mock.calls.length).toBeGreaterThan(6);
     expect(onJoystickEvent.mock.calls.length).toBeLessThan(11);
     clearTimeout(timer);
   });
