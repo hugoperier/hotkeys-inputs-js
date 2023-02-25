@@ -22,6 +22,16 @@ describe('test gamepad handler', () => {
     expect(gp.axeValues.length).toBe(gamepadMock.axes.length);
   });
 
+  test('vibrations', () => {
+    const gamepadMock = getMock();
+    gamepadMock.vibrationActuator = {
+      playEffect: (type, obj) => `${type} - ${obj.duration}`,
+    };
+    const gp = gamepad.init(gamepadMock);
+    expect(gp.vibrate(0.5, 500)).toEqual('dual-rumble - 500');
+    expect(gp.vibrate()).toEqual('dual-rumble - 500');
+  });
+
   test('Check button changed invoke cb', () => {
     const onCalled = jest.fn();
     const gamepadMock = getMock();

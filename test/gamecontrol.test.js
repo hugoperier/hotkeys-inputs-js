@@ -8,11 +8,11 @@ const wait = async (t) =>
 
 describe('gameControl', () => {
   test('assert animation frame is not running', () => {
-    const tmp = global.requestAnimationFrame
+    const tmp = global.requestAnimationFrame;
     global.requestAnimationFrame = jest.fn();
     gameControl.checkStatus();
     expect(global.requestAnimationFrame).not.toHaveBeenCalled();
-    global.requestAnimationFrame = tmp
+    global.requestAnimationFrame = tmp;
   });
 
   test('Check gameControl gamepads', () => {
@@ -33,21 +33,22 @@ describe('gameControl', () => {
     global.dispatchEvent(event);
     expect(mock).toHaveBeenCalledTimes(1);
     expect(Object.keys(gameControl.gamepads).length).toBe(1);
+    expect(gameControl.getGamepad(0)).toBeDefined();
 
     const disconnectEvent = new CustomEvent('gamepaddisconnected', {
       detail: { gamepad: gamepadMock },
       gamepad: gamepadMock,
     });
     global.dispatchEvent(disconnectEvent);
-    gameControl.off('connect', mock)
+    gameControl.off('connect', mock);
   });
 
   test('check animate frame runs when active', async () => {
     const onBeforeMock = jest.fn();
     const onAfterMock = jest.fn();
     const gamepadMock = getMock();
-    
-    await wait(100)
+
+    await wait(100);
     gameControl.on('beforeCycle', onBeforeMock);
     gameControl.on('afterCycle', onAfterMock);
     const event = new CustomEvent('gamepadconnected', {

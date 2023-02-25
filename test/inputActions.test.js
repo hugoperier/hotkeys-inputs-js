@@ -25,7 +25,7 @@ describe('inputActions', () => {
     inputActions.defineInputActions(defaultMapping);
     expect(inputActions.definedActions).toStrictEqual(defaultMapping);
   });
-  test('force define action should throw', () => {
+  test('define duplicate action should throw', () => {
     inputActions.defineInputActions(defaultMapping);
     const fn = () => {
       inputActions.defineInputActions(defaultMapping);
@@ -36,6 +36,19 @@ describe('inputActions', () => {
     inputActions.defineInputActions(defaultMapping);
     inputActions.defineInputActions(defaultMapping, { override: true });
     expect(inputActions.definedActions).toStrictEqual(defaultMapping);
+  });
+  test('register duplicate id should throw', () => {
+    inputActions.defineInputActions(defaultMapping);
+    const onAction = jest.fn();
+    inputActions.onInputActions('throw', {
+      directionX: onAction,
+    });
+    const regiserAgain = () => {
+      inputActions.onInputActions('throw', {
+        directionX: onAction,
+      });
+    };
+    expect(regiserAgain).toThrow();
   });
   test('trigger numeric action', () => {
     inputActions.defineInputActions(defaultMapping);
@@ -59,11 +72,24 @@ describe('inputActions', () => {
     expect(onAction).toHaveBeenCalledWith(2);
     inputActions.offInputActions('test');
   });
+  test('trigger undefined action', () => {
+    inputActions.defineInputActions(defaultMapping);
+    const onAction = jest.fn();
+    inputActions.onInputActions('test', {
+      directionX: onAction,
+    });
+    inputActions.registeredActions.keyboard['a'].handler();
+    expect(onAction).toHaveBeenCalledTimes(1);
+    expect(onAction).toHaveBeenCalledWith();
+    inputActions.offInputActions('test');
+  });
 
   test('trigger action on disabled input', () => {
     inputActions.defineInputActions(defaultMapping);
     inputActions.gamepadEnabled = false;
     inputActions.keyboardEnabled = false;
+    expect(inputActions.gamepadEnabled).toBe(false);
+    expect(inputActions.keyboardEnabled).toBe(false);
     const onAction = jest.fn();
     inputActions.onInputActions('test', {
       directionX: onAction,

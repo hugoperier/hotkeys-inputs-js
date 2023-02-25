@@ -161,6 +161,7 @@ const inputActions: InputActions = {
     this.supportedInputHandlers.forEach((e) => {
       Object.entries(this.registeredActions[e]).forEach(([k, v]) => {
         if (id === v.id) {
+          this.handlers[e].handler?.off(k);
           delete this.registeredActions[e][k];
         }
       });

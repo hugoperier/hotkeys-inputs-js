@@ -43,7 +43,7 @@ export type RegisteredActions = Record<InputHandlerType, Record<string | number,
 
 export interface IProxyInputEventHandler {
   on: (eventName: number | string, callback: (value?: number) => void, eventType?: InputEventType) => void;
-  off: (eventName: number | string, callback: (value?: number) => void) => void;
+  off: (eventName: number | string, callback?: (value?: number) => void) => void;
 }
 
 export interface IHandler {
