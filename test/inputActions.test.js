@@ -1,5 +1,7 @@
+import gameControl from '../src/gamecontrol';
 import inputActions from '../src/inputActions';
 import { DefaultGamepad } from '../src/types';
+import { getMock } from './mock.gamepad';
 
 describe('inputActions', () => {
   const defaultMapping = {
@@ -48,7 +50,7 @@ describe('inputActions', () => {
   });
   test('trigger analog action', () => {
     inputActions.defineInputActions(defaultMapping);
-    inputActions.handlers.gamepad.enabled = true;
+    inputActions.gamepadEnabled = true;
     const onAction = jest.fn();
     inputActions.onInputActions('test', {
       directionX: onAction,
@@ -60,7 +62,8 @@ describe('inputActions', () => {
 
   test('trigger action on disabled input', () => {
     inputActions.defineInputActions(defaultMapping);
-    inputActions.handlers.gamepad.enabled = false;
+    inputActions.gamepadEnabled = false;
+    inputActions.keyboardEnabled = false;
     const onAction = jest.fn();
     inputActions.onInputActions('test', {
       directionX: onAction,
@@ -68,6 +71,7 @@ describe('inputActions', () => {
     inputActions.registeredActions.gamepad[DefaultGamepad.LeftJoystickAxeX].handler(1);
     expect(onAction).not.toHaveBeenCalled();
     inputActions.offInputActions('test');
+    inputActions.keyboardEnabled = true;
   });
   test('unregister action', () => {
     inputActions.defineInputActions(defaultMapping);
@@ -78,5 +82,15 @@ describe('inputActions', () => {
     inputActions.offInputActions('test');
     expect(inputActions.registeredActions.keyboard['a']).not.toBeDefined();
     expect(onAction).not.toHaveBeenCalled();
+  });
+
+  test('gamepad set and unset handler', () => {
+    const mockGamepad = getMock();
+    expect(inputActions.handlers.gamepad.handler).not.toBeDefined();
+
+    gameControl.onConnect.trigger(mockGamepad);
+    expect(inputActions.handlers.gamepad.handler).toBeDefined();
+    gameControl.onDisconnect.trigger(mockGamepad);
+    expect(inputActions.handlers.gamepad.handler).not.toBeDefined();
   });
 });

@@ -7,18 +7,13 @@ const wait = async (t) =>
     setTimeout(res, t);
   });
 
-Object.defineProperty(global.navigator, 'getGamepads', {
-  value: () => {
-    const mock2 = getMock();
-    mock2.buttons[1] = {
-      pressed: true,
-    };
-    mock2.axes[0] = 0.18;
-    return [mock2];
-  },
-});
-
 describe('test gamepad handler', () => {
+  const getGamepadMock = getMock();
+  Object.defineProperty(global.navigator, 'getGamepads', {
+    value: () => {
+      return [getGamepadMock];
+    },
+  });
   test('initialize', () => {
     const gamepadMock = getMock();
     const gp = gamepad.init(gamepadMock);
@@ -54,13 +49,10 @@ describe('test gamepad handler', () => {
   test('cycle check status', () => {
     const gamepadMock = getMock();
     const gp = gamepad.init(gamepadMock);
-    const mockGamepads = () => [gamepadMock];
-    global.navigator = {
-      getGamepads: mockGamepads,
+    getGamepadMock.buttons[1] = {
+      pressed: true,
     };
-    gp.checkStatus();
-    gamepadMock.buttons[0] = true;
-    gamepadMock.axes[0] = 0.18;
+    getGamepadMock.axes[0] = 0.18;
     gp.checkStatus();
     expect(gp.axeValues[0]).toBe(0.18);
     expect(gp.axeValues[1]).toBe(0);
@@ -97,5 +89,31 @@ describe('test gamepad handler', () => {
     expect(onJoystickEvent.mock.calls.length).toBeGreaterThan(6);
     expect(onJoystickEvent.mock.calls.length).toBeLessThan(11);
     clearTimeout(timer);
+  });
+
+  test('unsubscribe from event', () => {
+    const gamepadMock = getMock();
+    const gp = gamepad.init(gamepadMock);
+    const onJoystickEvent = jest.fn();
+    const onButtonEvent = jest.fn();
+
+    gp.on(DefaultGamepad.LeftJoystickAxeY, onJoystickEvent, 'pressed');
+    gp.on(DefaultGamepad.KeyB, onButtonEvent, 'pressed');
+
+    getGamepadMock.buttons[DefaultGamepad.KeyB].pressed = true;
+    getGamepadMock.axes[1] = 0.5;
+    gp.checkStatus();
+    getGamepadMock.buttons[DefaultGamepad.KeyB].pressed = false;
+    getGamepadMock.axes[1] = 0;
+    gp.checkStatus();
+    expect(onButtonEvent).toHaveBeenCalledTimes(1);
+    expect(onJoystickEvent).toHaveBeenCalledTimes(1);
+
+    gp.off(DefaultGamepad.LeftJoystickAxeY);
+    gp.off(DefaultGamepad.KeyB);
+
+    getGamepadMock.buttons[DefaultGamepad.KeyB].pressed = true;
+    getGamepadMock.axes[1] = 0.5;
+    gp.checkStatus();
   });
 });

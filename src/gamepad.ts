@@ -16,7 +16,6 @@ const gamepad = {
       buttons: gpad.buttons.length,
       axes: Math.floor(gpad.axes.length / 2),
       axeValues: [],
-      axeThreshold: [1.0],
       axeStep: 0.15,
       hapticActuator: null,
       vibrationMode: -1,
@@ -25,18 +24,6 @@ const gamepad = {
       buttonActions: {},
       axesActions: {},
       pressed: {},
-      set: function (property: string, value: any) {
-        const properties = ['axeThreshold'];
-        if (properties.indexOf(property) >= 0) {
-          if (property === 'axeThreshold' && (!parseFloat(value) || value < 0.0 || value > 1.0)) {
-            console.error('gamepad: invalid value number');
-            return;
-          }
-          (this as any)[property] = value;
-        } else {
-          console.error('gamepad: invalid property');
-        }
-      },
       vibrate: function (value = 0.75, duration = 500) {
         if (this.hapticActuator) {
           switch (this.vibrationMode) {

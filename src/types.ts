@@ -72,7 +72,7 @@ export interface GameControl {
   onAfterCycle: ILiteEvent<void>;
   getGamepads: () => Record<number, GamepadPrototype>;
   getGamepad: (id: number) => GamepadPrototype | null;
-  set: (property: string, value: any) => void;
+  // set: (property: string, value: any) => void;
   checkStatus: () => void;
   init: () => void;
   on: GameControlConnectConnectEvent & GameControlCycleEvent;
@@ -129,7 +129,6 @@ export interface GamepadPrototype extends IProxyInputEventHandler {
   buttons: number;
   axes: number;
   axeValues: number[];
-  axeThreshold: number[];
   axeStep: number;
   hapticActuator: any;
   vibrationMode: number;
@@ -140,7 +139,6 @@ export interface GamepadPrototype extends IProxyInputEventHandler {
   pressed: Pressed;
   on: (eventName: number | string, callback: (value?: number) => void, eventType?: InputEventType) => void;
   off: (eventName: number | string) => void;
-  set: (property: string, value: any) => void;
   vibrate: (value?: number, duration?: number) => void;
   checkStatus: () => void;
 }

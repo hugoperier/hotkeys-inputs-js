@@ -1,5 +1,5 @@
 import gamepad from './gamepad';
-import { ILiteEvent, LiteEvent } from './LiteEvents';
+import { LiteEvent } from './LiteEvents';
 import { GameControl, GameControlEventHandler, GameControlEventType, GamepadPrototype } from './types';
 
 const gameControl: GameControl = {
@@ -21,27 +21,6 @@ const gameControl: GameControl = {
       return this.gamepads[id];
     }
     return null;
-  },
-  set: function (property, value) {
-    const properties = ['axeThreshold'];
-    if (properties.indexOf(property) >= 0) {
-      if (property === 'axeThreshold' && (!parseFloat(value) || value < 0.0 || value > 1.0)) {
-        console.error('gamepad: invalid value number');
-        return;
-      }
-
-      (this as any)[property] = value;
-
-      if (property === 'axeThreshold') {
-        const gps = this.getGamepads();
-        const ids = Object.keys(gps) as unknown as number[];
-        for (let x = 0; x < ids.length; x++) {
-          gps[ids[x]].set('axeThreshold', this.axeThreshold);
-        }
-      }
-    } else {
-      console.error('gamepad: invalid property');
-    }
   },
   checkStatus: function () {
     const requestAnimationFrame = window.requestAnimationFrame || (window as any).webkitRequestAnimationFrame;
@@ -67,7 +46,6 @@ const gameControl: GameControl = {
         if (!(window as any).gamepads[egp.index]) {
           (window as any).gamepads[egp.index] = egp;
           const gp = gamepad.init(egp);
-          gp.set('axeThreshold', this.axeThreshold);
           this.gamepads[gp.id] = gp;
           this.onConnect.trigger(this.gamepads[gp.id]);
         }
