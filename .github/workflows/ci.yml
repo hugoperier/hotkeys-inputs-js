@@ -1,7 +1,8 @@
 name: CI
 on:
   push:
-      - master
+      branches:
+        - master
 
 env:
   SKIP_PREFLIGHT_CHECK: true
