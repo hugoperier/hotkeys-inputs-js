@@ -1,8 +1,10 @@
 name: CI
 on:
   push:
-      branches:
-        - master
+    branches:
+       - master
+     tags:
+       - v*
 
 env:
   SKIP_PREFLIGHT_CHECK: true
@@ -28,7 +30,6 @@ jobs:
       #   uses: jaywcjlove/create-tag-action@v1.3.6 https://github.com/rickstaa/action-create-tag/issues/26
       #   with:
       #     package-path: ./package.json
-
 
       # - name: get tag version
       #   id: tag_version
