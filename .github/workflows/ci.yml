@@ -26,22 +26,22 @@ jobs:
       - run: npm install @jsdevtools/npm-publish -g
       - run: npm-publish --token="${{ secrets.NPM_TOKEN }}" ./package.json
 
-      - name: Create Tag
-        id: create_tag
-        uses: jaywcjlove/create-tag-action@v1.3.6
-        with:
-          package-path: ./package.json
+      # - name: Create Tag
+      #   id: create_tag
+      #   uses: jaywcjlove/create-tag-action@v1.3.6 https://github.com/rickstaa/action-create-tag/issues/26
+      #   with:
+      #     package-path: ./package.json
 
-      - name: get tag version
-        id: tag_version
-        uses: jaywcjlove/changelog-generator@v1.5.3
+      # - name: get tag version
+      #   id: tag_version
+      #   uses: jaywcjlove/changelog-generator@v1.5.3
 
-      - name: Build and Deploy
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          commit_message: ${{steps.tag_version.outputs.tag}} ${{ github.event.head_commit.message }}
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./build
+      # - name: Build and Deploy
+      #   uses: peaceiris/actions-gh-pages@v3
+      #   with:
+      #     commit_message: ${{steps.tag_version.outputs.tag}} ${{ github.event.head_commit.message }}
+      #     github_token: ${{ secrets.GITHUB_TOKEN }}
+      #     publish_dir: ./build
 
       - name: Generating coverage badges
         uses: jpb06/jest-badges-action@latest
