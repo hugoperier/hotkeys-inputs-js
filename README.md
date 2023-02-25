@@ -4,6 +4,7 @@ hotkeys-inputs-js is a javascript library for handling both keyboard and gamepad
 
 ![GitHub package version](https://img.shields.io/github/package-json/v/hugoperier/hotkeys-inputs-js)
 ![NPM](https://img.shields.io/npm/l/hotkeys-inputs-js)
+![Jest coverage](./badges/coverage-jest%20coverage.svg)
 
 ## Features
 

@@ -1,6 +1,6 @@
 {
   "name": "hotkeys-inputs-js",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "description": "A javascript library for handling both keyboard and gamepad inputs in web applications.",
   "main": "index.ts",
   "types": "index.d.ts",
@@ -9,7 +9,9 @@
     "build:watch": "tsc && vite build --watch",
     "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
     "lint": "tslint -p tsconfig.json",
-    "test": "jest"
+    "test": "jest",
+    "test:coverage": "jest --coverage",
+    "test:ci": "jest --ci --coverage --coverageReporters='json-summary'"
   },
   "repository": {
     "type": "git",
