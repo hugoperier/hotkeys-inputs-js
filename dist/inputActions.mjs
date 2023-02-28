@@ -1,5 +1,5 @@
 import k from "./gamecontrol.mjs";
-import "./gamepad-6ced0b39.mjs";
+import "./gamepad-5dd4d39d.mjs";
 var C = typeof navigator < "u" ? navigator.userAgent.toLowerCase().indexOf("firefox") > 0 : !1;
 function x(e, t, r, n) {
   e.addEventListener ? e.addEventListener(t, r, n) : e.attachEvent && e.attachEvent("on".concat(t), function() {
@@ -107,7 +107,7 @@ var K = {
 }, o = {};
 for (var E = 1; E < 20; E++)
   K["f".concat(E)] = 111 + E;
-var d = [], T = !1, D = "all", $ = [], A = function(t) {
+var d = [], I = !1, D = "all", $ = [], A = function(t) {
   return K[t.toLowerCase()] || v[t.toLowerCase()] || t.toUpperCase().charCodeAt(0);
 }, F = function(t) {
   return Object.keys(K).find(function(r) {
@@ -193,7 +193,7 @@ var j = function(t) {
     }
   });
 };
-function I(e, t, r, n) {
+function T(e, t, r, n) {
   if (t.element === n) {
     var i;
     if (t.scope === r || t.scope === "all") {
@@ -223,13 +223,13 @@ function H(e, t) {
     var f = O();
     if (r)
       for (var l = 0; l < r.length; l++)
-        r[l].scope === f && (e.type === "keydown" && r[l].keydown || e.type === "keyup" && r[l].keyup) && I(e, r[l], f, t);
+        r[l].scope === f && (e.type === "keydown" && r[l].keydown || e.type === "keyup" && r[l].keyup) && T(e, r[l], f, t);
     if (n in o) {
       for (var s = 0; s < o[n].length; s++)
         if ((e.type === "keydown" && o[n][s].keydown || e.type === "keyup" && o[n][s].keyup) && o[n][s].key) {
           for (var c = o[n][s], g = c.splitKey, p = c.key.split(g), h = [], w = 0; w < p.length; w++)
             h.push(A(p[w]));
-          h.sort().join("") === d.sort().join("") && I(e, c, f, t);
+          h.sort().join("") === d.sort().join("") && T(e, c, f, t);
         }
     }
   }
@@ -254,7 +254,7 @@ function b(e, t, r) {
     });
   typeof f < "u" && !N(f) && window && ($.push(f), x(f, "keydown", function(h) {
     H(h, f);
-  }, p), T || (T = !0, x(window, "focus", function() {
+  }, p), I || (I = !0, x(window, "focus", function() {
     d = [];
   }, p)), x(f, "keyup", function(h) {
     H(h, f), Y(h);
@@ -360,6 +360,9 @@ const re = {
       this.definedActions[r] = n;
     });
   },
+  cleanInputActions: function() {
+    this.definedActions = {};
+  },
   onInputActions: function(e, t, r) {
     const n = /* @__PURE__ */ new Set();
     Object.entries(t).forEach(([a, f]) => {
@@ -400,7 +403,8 @@ const re = {
   offInputActions: function(e) {
     this.supportedInputHandlers.forEach((t) => {
       Object.entries(this.registeredActions[t]).forEach(([r, n]) => {
-        e === n.id && delete this.registeredActions[t][r];
+        var i;
+        e === n.id && ((i = this.handlers[t].handler) == null || i.off(r), delete this.registeredActions[t][r]);
       });
     });
   }

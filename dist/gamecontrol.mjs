@@ -1,4 +1,4 @@
-import { L as o, g as d } from "./gamepad-6ced0b39.mjs";
+import { L as o, g as i } from "./gamepad-5dd4d39d.mjs";
 const a = {
   gamepads: {},
   axeThreshold: [1],
@@ -13,20 +13,6 @@ const a = {
   getGamepad: function(n) {
     return this.gamepads[n] ? this.gamepads[n] : null;
   },
-  set: function(n, e) {
-    if (["axeThreshold"].indexOf(n) >= 0) {
-      if (n === "axeThreshold" && (!parseFloat(e) || e < 0 || e > 1)) {
-        console.error("gamepad: invalid value number");
-        return;
-      }
-      if (this[n] = e, n === "axeThreshold") {
-        const i = this.getGamepads(), r = Object.keys(i);
-        for (let s = 0; s < r.length; s++)
-          i[r[s]].set("axeThreshold", this.axeThreshold);
-      }
-    } else
-      console.error("gamepad: invalid property");
-  },
   checkStatus: function() {
     const n = window.requestAnimationFrame || window.webkitRequestAnimationFrame, e = Object.keys(a.gamepads);
     a.onBeforeCycle.trigger();
@@ -40,8 +26,8 @@ const a = {
       if (window.gamepads || (window.gamepads = {}), e) {
         if (!window.gamepads[e.index]) {
           window.gamepads[e.index] = e;
-          const t = d.init(e);
-          t.set("axeThreshold", this.axeThreshold), this.gamepads[t.id] = t, this.onConnect.trigger(this.gamepads[t.id]);
+          const t = i.init(e);
+          this.gamepads[t.id] = t, this.onConnect.trigger(this.gamepads[t.id]);
         }
         Object.keys(this.gamepads).length === 1 && this.checkStatus();
       }
