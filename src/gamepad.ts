@@ -153,7 +153,7 @@ const gamepad = {
         gamepadPrototype.vibration = true;
       }
     }
-    gamepadPrototype.axeValues = gpad.axes as number[];
+    gamepadPrototype.axeValues = [...gpad.axes] as number[];
     return gamepadPrototype;
   },
 };

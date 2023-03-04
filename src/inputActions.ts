@@ -42,7 +42,6 @@ const inputActions: InputActions = {
     gameControl.on('connect', (gamepad) => {
       if (!this.handlers.gamepad.handler) {
         this.handlers.gamepad.handler = gamepad;
-        if (!this.handlers.gamepad.enabled) return;
         Object.entries(this.registeredActions.gamepad).forEach(([k, v]) => {
           this.handlers.gamepad.handler?.on(k, v.handler, v.event);
         });
@@ -68,7 +67,7 @@ const inputActions: InputActions = {
   cleanInputActions: function () {
     this.definedActions = {};
   },
-  onInputActions: function (id: string, handlers: ActionHandler, unsubscribedCallback: Function) {
+  onInputActions: function (id: string, handlers: ActionHandler, unsubscribedCallback?: Function) {
     const idsPendingDeletion = new Set<string>();
 
     // First, registering actions to input, and saving ids for action to be cleaned up
@@ -102,12 +101,10 @@ const inputActions: InputActions = {
           id,
           event: action.options?.event,
         };
-        onInputEvent.bind(this); //test to remove it
-        if (this.handlers[action.type].enabled)
-          this.handlers[action.type].handler?.on(action.key, onInputEvent, action.options?.event);
+        this.handlers[action.type].handler?.on(action.key, onInputEvent, action.options?.event);
       });
     });
-    this.unregisterActionsCallbacks[id] = unsubscribedCallback;
+    if (unsubscribedCallback) this.unregisterActionsCallbacks[id] = unsubscribedCallback;
     // Secondly, unregister all action from saved ids
     this.supportedInputHandlers.forEach((e) => {
       Object.entries(this.registeredActions[e]).forEach(([k, v]) => {
@@ -132,6 +129,7 @@ const inputActions: InputActions = {
         }
       });
     });
+    if (this.unregisterActionsCallbacks[id]) this.unregisterActionsCallbacks[id]();
   },
 };
 

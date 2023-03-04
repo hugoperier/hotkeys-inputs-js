@@ -111,7 +111,6 @@ export interface GameControl {
   onAfterCycle: ILiteEvent<void>;
   getGamepads: () => Record<number, GamepadPrototype>;
   getGamepad: (id: number) => GamepadPrototype | null;
-  // set: (property: string, value: any) => void;
   checkStatus: () => void;
   init: () => void;
   on: GameControlConnectConnectEvent & GameControlCycleEvent;

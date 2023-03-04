@@ -96,7 +96,7 @@ const x = {
         vertical: c(),
         horizontal: c()
       };
-    return i.hapticActuators ? typeof i.hapticActuators.pulse == "function" ? (e.hapticActuator = i.hapticActuators, e.vibrationMode = 0, e.vibration = !0) : i.hapticActuators[0] && typeof i.hapticActuators[0].pulse == "function" && (e.hapticActuator = i.hapticActuators[0], e.vibrationMode = 0, e.vibration = !0) : i.vibrationActuator && typeof i.vibrationActuator.playEffect == "function" && (e.hapticActuator = i.vibrationActuator, e.vibrationMode = 1, e.vibration = !0), e.axeValues = i.axes, e;
+    return i.hapticActuators ? typeof i.hapticActuators.pulse == "function" ? (e.hapticActuator = i.hapticActuators, e.vibrationMode = 0, e.vibration = !0) : i.hapticActuators[0] && typeof i.hapticActuators[0].pulse == "function" && (e.hapticActuator = i.hapticActuators[0], e.vibrationMode = 0, e.vibration = !0) : i.vibrationActuator && typeof i.vibrationActuator.playEffect == "function" && (e.hapticActuator = i.vibrationActuator, e.vibrationMode = 1, e.vibration = !0), e.axeValues = [...i.axes], e;
   }
 };
 export {

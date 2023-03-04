@@ -9,7 +9,7 @@ import {
   InputActions
 } from './dist/types';
 
-declare const gameControl: GameControl;
+declare const gamecontrol: GameControl;
 //# sourceMappingURL=gamecontrol.d.ts.map
 
 declare const gamepad: {
@@ -20,7 +20,7 @@ declare const gamepad: {
 declare const inputActions: InputActions;
 //# sourceMappingURL=inputActions.d.ts.map
 export default inputActions;
-export { gamepad, gameControl };
+export { gamepad, gamecontrol };
 export {
   InputActions,
   InputHandlerType,

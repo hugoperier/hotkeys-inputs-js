@@ -1,4 +1,6 @@
 module.exports = require('./dist/inputActions.js');
+module.exports.gamecontrol = require('./dist/gamecontrol.js')
+module.exports.gamepad = require('./dist/gamepad.js')
 module.exports.DefaultGamepad = {
   LeftJoystickAxeX: -1,
   LeftJoystickAxeY: -2,
