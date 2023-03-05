@@ -1,6 +1,6 @@
 {
   "name": "hotkeys-inputs-js",
-  "version": "1.1.18",
+  "version": "1.1.21",
   "description": "A javascript library for handling both keyboard and gamepad inputs in web applications.",
   "main": "index.js",
   "types": "index.d.ts",

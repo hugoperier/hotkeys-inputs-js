@@ -6,6 +6,7 @@ import {
   RegisterInputActionOptions,
   GameControl,
   GamepadPrototype,
+  IHandler,
 } from './dist/types';
 
 export interface InputActions {
@@ -25,6 +26,10 @@ export interface InputActions {
    * @param opts Options for the definition of inputActions
    */
   defineInputActions: (actions: InputHandlerDefinedAction, opts?: RegisterInputActionOptions) => void;
+  /**
+   * Remove all previously defined actions
+   */
+  cleanInputActions: () => void;
   /**
    * Subscribe a group of action to events
    * from an already inputhandler map. If provided handlers are going to replace
@@ -55,13 +60,7 @@ declare const inputActions: InputActions;
 //# sourceMappingURL=inputActions.d.ts.map
 export default inputActions;
 export { gamepad, gamecontrol };
-export {
-  InputHandlerType,
-  InputHandlerDefinedAction,
-  RegisteredActions,
-  RegisterInputActionOptions,
-  ActionHandler,
-};
+export { InputHandlerType, InputHandlerDefinedAction, RegisteredActions, RegisterInputActionOptions, ActionHandler };
 
 export enum DefaultGamepad {
   LeftJoystickAxeX = -1,

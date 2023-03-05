@@ -6,20 +6,20 @@ function x(e, t, r, n) {
     r(window.event);
   });
 }
-function U(e, t) {
+function D(e, t) {
   for (var r = t.slice(0, t.length - 1), n = 0; n < r.length; n++)
     r[n] = e[r[n].toLowerCase()];
   return r;
 }
-function B(e) {
+function I(e) {
   typeof e != "string" && (e = ""), e = e.replace(/\s/g, "");
   for (var t = e.split(","), r = t.lastIndexOf(""); r >= 0; )
     t[r - 1] += ",", t.splice(r, 1), r = t.lastIndexOf("");
   return t;
 }
 function V(e, t) {
-  for (var r = e.length >= t.length ? e : t, n = e.length >= t.length ? t : e, i = !0, s = 0; s < r.length; s++)
-    n.indexOf(r[s]) === -1 && (i = !1);
+  for (var r = e.length >= t.length ? e : t, n = e.length >= t.length ? t : e, i = !0, a = 0; a < r.length; a++)
+    n.indexOf(r[a]) === -1 && (i = !1);
   return i;
 }
 var K = {
@@ -104,10 +104,10 @@ var K = {
   18: !1,
   17: !1,
   91: !1
-}, d = {};
+}, l = {};
 for (var A = 1; A < 20; A++)
   K["f".concat(A)] = 111 + A;
-var o = [], I = !1, D = "all", $ = [], E = function(t) {
+var o = [], H = !1, T = "all", $ = [], E = function(t) {
   return K[t.toLowerCase()] || v[t.toLowerCase()] || t.toUpperCase().charCodeAt(0);
 }, F = function(t) {
   return Object.keys(K).find(function(r) {
@@ -119,10 +119,10 @@ var o = [], I = !1, D = "all", $ = [], E = function(t) {
   });
 };
 function G(e) {
-  D = e || "all";
+  T = e || "all";
 }
 function O() {
-  return D || "all";
+  return T || "all";
 }
 function q() {
   return o.slice(0);
@@ -142,9 +142,9 @@ function Q(e) {
 function W(e, t) {
   var r, n;
   e || (e = O());
-  for (var i in d)
-    if (Object.prototype.hasOwnProperty.call(d, i))
-      for (r = d[i], n = 0; n < r.length; )
+  for (var i in l)
+    if (Object.prototype.hasOwnProperty.call(l, i))
+      for (r = l[i], n = 0; n < r.length; )
         r[n].scope === e ? r.splice(n, 1) : n++;
   O() === e && G(t || "all");
 }
@@ -158,8 +158,8 @@ function Y(e) {
 }
 function Z(e) {
   if (typeof e > "u")
-    Object.keys(d).forEach(function(f) {
-      return delete d[f];
+    Object.keys(l).forEach(function(f) {
+      return delete l[f];
     });
   else if (Array.isArray(e))
     e.forEach(function(f) {
@@ -170,42 +170,42 @@ function Z(e) {
   else if (typeof e == "string") {
     for (var t = arguments.length, r = new Array(t > 1 ? t - 1 : 0), n = 1; n < t; n++)
       r[n - 1] = arguments[n];
-    var i = r[0], s = r[1];
-    typeof i == "function" && (s = i, i = ""), j({
+    var i = r[0], a = r[1];
+    typeof i == "function" && (a = i, i = ""), j({
       key: e,
       scope: i,
-      method: s,
+      method: a,
       splitKey: "+"
     });
   }
 }
 var j = function(t) {
-  var r = t.key, n = t.scope, i = t.method, s = t.splitKey, f = s === void 0 ? "+" : s, l = B(r);
-  l.forEach(function(a) {
-    var c = a.split(f), b = c.length, p = c[b - 1], h = p === "*" ? "*" : E(p);
-    if (d[h]) {
+  var r = t.key, n = t.scope, i = t.method, a = t.splitKey, f = a === void 0 ? "+" : a, d = I(r);
+  d.forEach(function(s) {
+    var c = s.split(f), b = c.length, p = c[b - 1], h = p === "*" ? "*" : E(p);
+    if (l[h]) {
       n || (n = O());
-      var w = b > 1 ? U(v, c) : [];
-      d[h] = d[h].filter(function(g) {
+      var w = b > 1 ? D(v, c) : [];
+      l[h] = l[h].filter(function(g) {
         var y = i ? g.method === i : !0;
         return !(y && g.scope === n && V(g.mods, w));
       });
     }
   });
 };
-function T(e, t, r, n) {
+function U(e, t, r, n) {
   if (t.element === n) {
     var i;
     if (t.scope === r || t.scope === "all") {
       i = t.mods.length > 0;
-      for (var s in u)
-        Object.prototype.hasOwnProperty.call(u, s) && (!u[s] && t.mods.indexOf(+s) > -1 || u[s] && t.mods.indexOf(+s) === -1) && (i = !1);
+      for (var a in u)
+        Object.prototype.hasOwnProperty.call(u, a) && (!u[a] && t.mods.indexOf(+a) > -1 || u[a] && t.mods.indexOf(+a) === -1) && (i = !1);
       (t.mods.length === 0 && !u[16] && !u[18] && !u[17] && !u[91] || i || t.shortcut === "*") && t.method(e, t) === !1 && (e.preventDefault ? e.preventDefault() : e.returnValue = !1, e.stopPropagation && e.stopPropagation(), e.cancelBubble && (e.cancelBubble = !0));
     }
   }
 }
-function H(e, t) {
-  var r = d["*"], n = e.keyCode || e.which || e.charCode;
+function B(e, t) {
+  var r = l["*"], n = e.keyCode || e.which || e.charCode;
   if (m.filter.call(this, e)) {
     if ((n === 93 || n === 224) && (n = 91), o.indexOf(n) === -1 && n !== 229 && o.push(n), ["ctrlKey", "altKey", "shiftKey", "metaKey"].forEach(function(g) {
       var y = S[g];
@@ -217,19 +217,19 @@ function H(e, t) {
       if (!r)
         return;
     }
-    for (var s in u)
-      Object.prototype.hasOwnProperty.call(u, s) && (u[s] = e[S[s]]);
+    for (var a in u)
+      Object.prototype.hasOwnProperty.call(u, a) && (u[a] = e[S[a]]);
     e.getModifierState && !(e.altKey && !e.ctrlKey) && e.getModifierState("AltGraph") && (o.indexOf(17) === -1 && o.push(17), o.indexOf(18) === -1 && o.push(18), u[17] = !0, u[18] = !0);
     var f = O();
     if (r)
-      for (var l = 0; l < r.length; l++)
-        r[l].scope === f && (e.type === "keydown" && r[l].keydown || e.type === "keyup" && r[l].keyup) && T(e, r[l], f, t);
-    if (n in d) {
-      for (var a = 0; a < d[n].length; a++)
-        if ((e.type === "keydown" && d[n][a].keydown || e.type === "keyup" && d[n][a].keyup) && d[n][a].key) {
-          for (var c = d[n][a], b = c.splitKey, p = c.key.split(b), h = [], w = 0; w < p.length; w++)
+      for (var d = 0; d < r.length; d++)
+        r[d].scope === f && (e.type === "keydown" && r[d].keydown || e.type === "keyup" && r[d].keyup) && U(e, r[d], f, t);
+    if (n in l) {
+      for (var s = 0; s < l[n].length; s++)
+        if ((e.type === "keydown" && l[n][s].keydown || e.type === "keyup" && l[n][s].keyup) && l[n][s].key) {
+          for (var c = l[n][s], b = c.splitKey, p = c.key.split(b), h = [], w = 0; w < p.length; w++)
             h.push(E(p[w]));
-          h.sort().join("") === o.sort().join("") && T(e, c, f, t);
+          h.sort().join("") === o.sort().join("") && U(e, c, f, t);
         }
     }
   }
@@ -239,31 +239,31 @@ function N(e) {
 }
 function m(e, t, r) {
   o = [];
-  var n = B(e), i = [], s = "all", f = document, l = 0, a = !1, c = !0, b = "+", p = !1;
-  for (r === void 0 && typeof t == "function" && (r = t), Object.prototype.toString.call(t) === "[object Object]" && (t.scope && (s = t.scope), t.element && (f = t.element), t.keyup && (a = t.keyup), t.keydown !== void 0 && (c = t.keydown), t.capture !== void 0 && (p = t.capture), typeof t.splitKey == "string" && (b = t.splitKey)), typeof t == "string" && (s = t); l < n.length; l++)
-    e = n[l].split(b), i = [], e.length > 1 && (i = U(v, e)), e = e[e.length - 1], e = e === "*" ? "*" : E(e), e in d || (d[e] = []), d[e].push({
-      keyup: a,
+  var n = I(e), i = [], a = "all", f = document, d = 0, s = !1, c = !0, b = "+", p = !1;
+  for (r === void 0 && typeof t == "function" && (r = t), Object.prototype.toString.call(t) === "[object Object]" && (t.scope && (a = t.scope), t.element && (f = t.element), t.keyup && (s = t.keyup), t.keydown !== void 0 && (c = t.keydown), t.capture !== void 0 && (p = t.capture), typeof t.splitKey == "string" && (b = t.splitKey)), typeof t == "string" && (a = t); d < n.length; d++)
+    e = n[d].split(b), i = [], e.length > 1 && (i = D(v, e)), e = e[e.length - 1], e = e === "*" ? "*" : E(e), e in l || (l[e] = []), l[e].push({
+      keyup: s,
       keydown: c,
-      scope: s,
+      scope: a,
       mods: i,
-      shortcut: n[l],
+      shortcut: n[d],
       method: r,
-      key: n[l],
+      key: n[d],
       splitKey: b,
       element: f
     });
   typeof f < "u" && !N(f) && window && ($.push(f), x(f, "keydown", function(h) {
-    H(h, f);
-  }, p), I || (I = !0, x(window, "focus", function() {
+    B(h, f);
+  }, p), H || (H = !0, x(window, "focus", function() {
     o = [];
   }, p)), x(f, "keyup", function(h) {
-    H(h, f), Y(h);
+    B(h, f), Y(h);
   }, p));
 }
 function ee(e) {
   var t = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : "all";
-  Object.keys(d).forEach(function(r) {
-    var n = d[r].filter(function(i) {
+  Object.keys(l).forEach(function(r) {
+    var n = l[r].filter(function(i) {
       return i.scope === t && i.shortcut === e;
     });
     n.forEach(function(i) {
@@ -300,7 +300,7 @@ const re = {
     }) : m(e, {
       keyup: r === "released" || r === "changed" ? !0 : null,
       keydown: r === "pressed" || r === "changed" ? !0 : null
-    }, (i, s) => {
+    }, (i, a) => {
       i.repeat || t(m.isPressed(e) === !0 ? 1 : 0);
     });
   },
@@ -361,36 +361,37 @@ const re = {
   },
   onInputActions: function(e, t, r) {
     const n = /* @__PURE__ */ new Set();
-    Object.entries(t).forEach(([s, f]) => {
-      this.definedActions[s].forEach((a) => {
+    Object.entries(t).forEach(([a, f]) => {
+      const d = this.definedActions[a];
+      d == null || d.forEach((s) => {
         var p, h, w, g;
-        const c = this.registeredActions[a.type][a.key];
+        const c = this.registeredActions[s.type][s.key];
         if (c) {
           if (c.id === e)
             throw new Error(`There is already a group of event registered under the id [${e}]. Unsubscribe this group of event before registering a new one`);
-          n.add(c.id), (p = this.handlers[a.type].handler) == null || p.off(a.key, c.handler);
+          n.add(c.id), (p = this.handlers[s.type].handler) == null || p.off(s.key, c.handler);
         }
         const b = (y) => {
           var _, L;
-          if (!this.handlers[a.type].enabled)
+          if (!this.handlers[s.type].enabled)
             return;
           if (!y) {
             f();
             return;
           }
-          const R = y === 1 ? ((_ = a.options) == null ? void 0 : _.value) ?? 1 : y === 0 ? 0 : (((L = a.options) == null ? void 0 : L.value) ?? 1) / 1 * y;
+          const R = y === 1 ? ((_ = s.options) == null ? void 0 : _.value) ?? 1 : y === 0 ? 0 : (((L = s.options) == null ? void 0 : L.value) ?? 1) / 1 * y;
           f(R);
         };
-        this.registeredActions[a.type][a.key] = {
+        this.registeredActions[s.type][s.key] = {
           handler: b,
           id: e,
-          event: (h = a.options) == null ? void 0 : h.event
-        }, (g = this.handlers[a.type].handler) == null || g.on(a.key, b, (w = a.options) == null ? void 0 : w.event);
+          event: (h = s.options) == null ? void 0 : h.event
+        }, (g = this.handlers[s.type].handler) == null || g.on(s.key, b, (w = s.options) == null ? void 0 : w.event);
       });
-    }), r && (this.unregisterActionsCallbacks[e] = r), this.supportedInputHandlers.forEach((s) => {
-      Object.entries(this.registeredActions[s]).forEach(([f, l]) => {
-        var a;
-        n.has(l.id) && ((a = this.handlers[s].handler) == null || a.off(f, l.handler), delete this.registeredActions[s][f]);
+    }), r && (this.unregisterActionsCallbacks[e] = r), this.supportedInputHandlers.forEach((a) => {
+      Object.entries(this.registeredActions[a]).forEach(([f, d]) => {
+        var s;
+        n.has(d.id) && ((s = this.handlers[a].handler) == null || s.off(f, d.handler), delete this.registeredActions[a][f]);
       });
     });
     for (var i of Array.from(n.values()))
